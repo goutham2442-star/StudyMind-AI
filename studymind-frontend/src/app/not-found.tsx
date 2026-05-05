@@ -1,16 +1,23 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Home, LayoutDashboard, Search } from 'lucide-react';
 import { Button } from '@/components/ui';
 
 export default function NotFound() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <div className="h-screen w-full bg-[#0A0A0F] flex flex-col items-center justify-center relative overflow-hidden px-6">
       {/* Background Animated Elements */}
       <div className="absolute inset-0 pointer-events-none">
-        {[...Array(20)].map((_, i) => (
+        {mounted && [...Array(20)].map((_, i) => (
           <motion.div
             key={i}
             initial={{ 
