@@ -48,6 +48,13 @@ if %errorlevel% neq 0 (
 )
 
 echo.
+echo  [*] Installing/Updating Backend Dependencies...
+cd backend && pip install -r requirements.txt >nul 2>&1 && cd ..
+
+echo  [*] Installing/Updating Frontend Dependencies...
+cd studymind-frontend && npm install >nul 2>&1 && cd ..
+
+echo.
 echo  [1/3] Starting Backend (FastAPI)...
 start "StudyMind Backend" /min cmd /k "cd backend && python main.py"
 
