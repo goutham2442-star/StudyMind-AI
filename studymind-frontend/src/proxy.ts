@@ -13,7 +13,37 @@ export async function proxy(request: NextRequest) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('❌ CRITICAL: Missing Supabase environment variables in proxy.ts');
+    const isHtml = request.headers.get('accept')?.includes('text/html');
+    
+    if (isHtml) {
+      return new NextResponse(
+        `
+        <html>
+          <head>
+            <title>Configuration Error | StudyMind AI</title>
+            <style>
+              body { font-family: sans-serif; background: #08080C; color: #F1F5F9; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+              .card { background: #111118; padding: 40px; border-radius: 24px; border: 1px solid #1E1E2E; max-width: 500px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+              h1 { color: #4F8EF7; margin-top: 0; }
+              code { background: #1E1E2E; padding: 4px 8px; border-radius: 4px; color: #E2E8F0; }
+              p { line-height: 1.6; opacity: 0.8; }
+              .btn { display: inline-block; margin-top: 20px; padding: 12px 24px; background: #4F8EF7; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; }
+            </style>
+          </head>
+          <body>
+            <div class="card">
+              <h1>⚠️ Configuration Required</h1>
+              <p>Your Supabase URL and Anon Key are missing from <code>.env.local</code>.</p>
+              <p>Please create <code>studymind-frontend/.env.local</code> and add your <code>NEXT_PUBLIC_SUPABASE_URL</code> and <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>.</p>
+              <a href="https://supabase.com/dashboard" target="_blank" class="btn">Go to Supabase Dashboard</a>
+            </div>
+          </body>
+        </html>
+        `,
+        { status: 500, headers: { 'Content-Type': 'text/html' } }
+      );
+    }
+
     return new NextResponse(
       JSON.stringify({ 
         error: 'Configuration Error', 
