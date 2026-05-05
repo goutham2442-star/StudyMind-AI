@@ -72,45 +72,39 @@ export default function UploadPage() {
     setProcessingStage(1);
 
     try {
-      // Stage 1: Upload to Storage
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      // 1. Get the current session for Auth header
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Session expired. Please login again.');
+        router.push('/login');
+        return;
+      }
 
-      const { data: storageData, error: storageError } = await supabase.storage
-        .from('papers')
-        .upload(filePath, file);
+      // 2. Prepare FormData
+      const formDataToSend = new FormData();
+      formDataToSend.append('file', file);
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('subject', formData.subject);
+      formDataToSend.append('year', formData.year);
+      formDataToSend.append('is_public', String(formData.isPublic));
+      if (formData.tags.length > 0) {
+        formDataToSend.append('tags', formData.tags.join(','));
+      }
 
-      if (storageError) throw storageError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('papers')
-        .getPublicUrl(filePath);
-
-      // Stage 2: Extracting (Simulated)
+      // Stage 2: Processing (Backend handles extraction + analysis)
       setProcessingStage(2);
-      await new Promise(r => setTimeout(r, 2000));
-
-      // Stage 3: Analyzing (Simulated API call)
-      setProcessingStage(3);
-      const { data: { user } } = await supabase.auth.getUser();
       
-      const paperData = {
-        title: formData.title,
-        subject: formData.subject,
-        exam_year: parseInt(formData.year),
-        file_url: publicUrl,
-        file_path: filePath,
-        is_public: formData.isPublic,
-        tags: formData.tags,
-        user_id: user?.id
-      };
-
-      // In a real app, the backend would handle extraction and AI analysis
-      // We'll call our FastAPI backend here
-      const response = await axios.post('/api/papers/upload', paperData, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await axios.post(`${apiUrl}/api/papers/upload`, formDataToSend, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            if (percentCompleted === 100) setProcessingStage(3);
+          }
         }
       });
 
@@ -123,7 +117,8 @@ export default function UploadPage() {
       toast.success('Paper analyzed successfully!');
     } catch (error: any) {
       console.error('Upload error:', error);
-      toast.error(error.message || 'Failed to upload paper');
+      const errorMessage = error.response?.data?.detail || error.message || 'Failed to upload paper';
+      toast.error(errorMessage);
       setStep(2);
     } finally {
       setLoading(false);
