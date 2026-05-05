@@ -31,7 +31,7 @@ export function Sidebar() {
     const saved = localStorage.getItem('sidebar-collapsed');
     if (saved) setIsCollapsed(JSON.parse(saved));
 
-    supabase.auth.getUser().then(({ data }) => {
+    supabase.auth.getUser().then(({ data }: any) => {
       setUser(data.user);
     });
   }, []);
