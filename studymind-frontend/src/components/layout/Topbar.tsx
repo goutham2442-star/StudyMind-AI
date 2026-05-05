@@ -22,52 +22,60 @@ export function Topbar() {
   };
 
   return (
-    <header className="h-16 border-b border-border-accent bg-background/50 backdrop-blur-md sticky top-0 z-30 px-6 flex items-center justify-between">
+    <header className="h-20 border-b border-white/5 bg-background/40 backdrop-blur-2xl sticky top-0 z-30 px-8 flex items-center justify-between">
       {/* Left: Breadcrumbs / Title */}
-      <div className="flex items-center gap-4">
-        <h1 className="text-lg font-heading font-bold text-foreground">
+      <div className="flex items-center gap-6">
+        <h1 className="text-xl font-heading font-black text-foreground tracking-tight text-glow">
           {getPageTitle()}
         </h1>
-        <div className="hidden md:flex items-center gap-2 text-xs text-muted font-medium">
-          <span className="opacity-50">/</span>
+        <div className="hidden lg:flex items-center gap-3 text-[10px] text-muted font-black uppercase tracking-[0.2em] opacity-40">
           <span>App</span>
-          <span className="opacity-50">/</span>
-          <span className="text-primary">{getPageTitle()}</span>
+          <span>/</span>
+          <span className="text-primary opacity-100">{getPageTitle()}</span>
         </div>
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         <button 
           onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
-          className="p-2 text-muted hover:text-primary hover:bg-primary/5 rounded-lg transition-all flex items-center gap-2 group"
+          className="h-10 px-4 text-muted hover:text-primary hover:bg-white/5 border border-white/5 hover:border-primary/20 rounded-xl transition-all flex items-center gap-4 group"
         >
-          <Search className="w-5 h-5" />
-          <span className="hidden lg:inline text-xs font-bold bg-surface-2 px-1.5 py-0.5 rounded border border-border-accent group-hover:border-primary/30">
-            ⌘K
-          </span>
+          <Search className="w-4 h-4" />
+          <div className="hidden lg:flex items-center gap-1.5 opacity-50 group-hover:opacity-100 transition-opacity">
+            <span className="text-[10px] font-black border border-white/20 px-1.5 py-0.5 rounded-md bg-white/5">
+              ⌘
+            </span>
+            <span className="text-[10px] font-black border border-white/20 px-1.5 py-0.5 rounded-md bg-white/5">
+              K
+            </span>
+          </div>
         </button>
 
-        <button className="p-2 text-muted hover:text-primary hover:bg-primary/5 rounded-lg transition-all relative">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-background" />
+        <button className="p-2.5 text-muted hover:text-primary hover:bg-white/5 border border-transparent hover:border-white/10 rounded-xl transition-all relative group">
+          <Bell className="w-5 h-5 transition-transform group-hover:rotate-12" />
+          <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-error rounded-full border-2 border-[#050508] shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
         </button>
 
-        <div className="w-px h-6 bg-border-accent mx-2" />
+        <div className="w-px h-8 bg-white/5 mx-2" />
 
-        <div className="flex items-center gap-3 pl-2">
+        <div className="flex items-center gap-4 pl-2 group cursor-pointer">
           <div className="text-right hidden sm:block">
-            <p className="text-xs font-bold leading-none">
+            <p className="text-xs font-black tracking-tight group-hover:text-primary transition-colors">
               {user?.user_metadata?.full_name || 'Student'}
             </p>
-            <p className="text-[10px] text-muted leading-none mt-1 uppercase tracking-widest">
+            <p className="text-[9px] text-muted font-black uppercase tracking-[0.2em] mt-1 opacity-50">
               {user?.user_metadata?.university || 'University'}
             </p>
           </div>
-          <Avatar 
-            name={user?.user_metadata?.full_name || 'User'} 
-            size="sm" 
-          />
+          <div className="relative">
+            <div className="absolute -inset-1 bg-linear-to-r from-primary to-secondary rounded-full blur opacity-0 group-hover:opacity-40 transition-opacity" />
+            <Avatar 
+              name={user?.user_metadata?.full_name || 'User'} 
+              size="sm" 
+              className="relative border border-white/10"
+            />
+          </div>
         </div>
       </div>
     </header>
