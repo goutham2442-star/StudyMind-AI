@@ -5,20 +5,25 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="bg-background border-t border-border-accent pt-20 pb-10 px-6 md:px-12">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+    <footer className="bg-[#050508] border-t border-white/5 pt-32 pb-16 px-8 md:px-16 overflow-hidden relative">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-px bg-linear-to-r from-transparent via-primary/50 to-transparent" />
+      
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 mb-24 relative z-10">
         {/* Brand Col */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-linear-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-glow">
-              <GraduationCap className="text-white w-5 h-5" />
+        <div className="lg:col-span-2 space-y-8">
+          <div className="flex items-center gap-4 group cursor-pointer">
+            <div className="w-12 h-12 bg-linear-to-br from-primary to-secondary rounded-[14px] flex items-center justify-center shadow-glow transition-transform group-hover:scale-110 duration-500">
+              <GraduationCap className="text-white w-6 h-6" />
             </div>
-            <span className="text-xl font-heading font-bold tracking-tight text-foreground">StudyMind AI</span>
+            <div className="flex flex-col">
+              <span className="text-2xl font-heading font-black tracking-tight text-glow">StudyMind</span>
+              <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] opacity-80">Academic Intelligence</span>
+            </div>
           </div>
-          <p className="text-muted text-sm leading-relaxed max-w-xs">
-            Empowering students with AI-driven academic intelligence. Master your subjects, ace your exams.
+          <p className="text-muted text-base leading-relaxed max-w-sm font-medium opacity-70">
+            Empowering students with AI-driven academic intelligence. Master your subjects, navigate complex papers, and ace your university examinations with the power of Gemini.
           </p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <SocialLink href="#" icon={MessageCircle} />
             <SocialLink href="#" icon={Globe} />
             <SocialLink href="#" icon={Users} />
@@ -26,44 +31,50 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Links Col 1 */}
+        {/* Links Columns */}
         <div>
-          <h4 className="font-bold mb-6 text-foreground uppercase tracking-widest text-xs">Product</h4>
-          <ul className="space-y-4 text-sm text-muted">
-            <li><Link href="#features" className="hover:text-primary transition-colors">Features</Link></li>
-            <li><Link href="#how-it-works" className="hover:text-primary transition-colors">How it works</Link></li>
-            <li><Link href="/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
-            <li><Link href="/papers" className="hover:text-primary transition-colors">Public Papers</Link></li>
+          <h4 className="font-black mb-8 text-foreground uppercase tracking-[0.2em] text-[11px] opacity-40">Product</h4>
+          <ul className="space-y-4 text-sm font-bold text-muted">
+            <li><Link href="#features" className="hover:text-primary transition-colors hover:translate-x-1 inline-block">Features</Link></li>
+            <li><Link href="#how-it-works" className="hover:text-primary transition-colors hover:translate-x-1 inline-block">How it works</Link></li>
+            <li><Link href="/pricing" className="hover:text-primary transition-colors hover:translate-x-1 inline-block">Pricing</Link></li>
+            <li><Link href="/papers" className="hover:text-primary transition-colors hover:translate-x-1 inline-block">Public Papers</Link></li>
           </ul>
         </div>
 
-        {/* Links Col 2 */}
         <div>
-          <h4 className="font-bold mb-6 text-foreground uppercase tracking-widest text-xs">Company</h4>
-          <ul className="space-y-4 text-sm text-muted">
-            <li><Link href="/about" className="hover:text-primary transition-colors">About Us</Link></li>
-            <li><Link href="/blog" className="hover:text-primary transition-colors">Blog</Link></li>
-            <li><Link href="/careers" className="hover:text-primary transition-colors">Careers</Link></li>
-            <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
+          <h4 className="font-black mb-8 text-foreground uppercase tracking-[0.2em] text-[11px] opacity-40">Company</h4>
+          <ul className="space-y-4 text-sm font-bold text-muted">
+            <li><Link href="/about" className="hover:text-primary transition-colors hover:translate-x-1 inline-block">About Us</Link></li>
+            <li><Link href="/blog" className="hover:text-primary transition-colors hover:translate-x-1 inline-block">Blog</Link></li>
+            <li><Link href="/careers" className="hover:text-primary transition-colors hover:translate-x-1 inline-block">Careers</Link></li>
+            <li><Link href="/contact" className="hover:text-primary transition-colors hover:translate-x-1 inline-block">Contact</Link></li>
           </ul>
         </div>
 
-        {/* Links Col 3 */}
         <div>
-          <h4 className="font-bold mb-6 text-foreground uppercase tracking-widest text-xs">Legal</h4>
-          <ul className="space-y-4 text-sm text-muted">
-            <li><Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
-            <li><Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
-            <li><Link href="/cookies" className="hover:text-primary transition-colors">Cookie Policy</Link></li>
+          <h4 className="font-black mb-8 text-foreground uppercase tracking-[0.2em] text-[11px] opacity-40">Legal</h4>
+          <ul className="space-y-4 text-sm font-bold text-muted">
+            <li><Link href="/privacy" className="hover:text-primary transition-colors hover:translate-x-1 inline-block">Privacy Policy</Link></li>
+            <li><Link href="/terms" className="hover:text-primary transition-colors hover:translate-x-1 inline-block">Terms of Service</Link></li>
+            <li><Link href="/cookies" className="hover:text-primary transition-colors hover:translate-x-1 inline-block">Cookie Policy</Link></li>
           </ul>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto pt-8 border-t border-border-accent/30 text-center">
-        <p className="text-muted text-xs font-medium">
-          © {new Date().getFullYear()} StudyMind AI. All rights reserved. Built with ❤️ for university students.
+      <div className="max-w-7xl mx-auto pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+        <p className="text-muted text-[10px] font-black uppercase tracking-[0.2em] opacity-40">
+          © {new Date().getFullYear()} StudyMind AI. All rights reserved.
         </p>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-success shadow-[0_0_10px_rgba(16,185,129,0.5)] animate-pulse" />
+          <span className="text-[10px] font-black uppercase tracking-widest text-success">All Systems Operational</span>
+        </div>
       </div>
+      
+      {/* Background Decoration */}
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary/5 blur-[120px] rounded-full pointer-events-none" />
     </footer>
   );
 }
@@ -72,9 +83,9 @@ function SocialLink({ href, icon: Icon }: any) {
   return (
     <a 
       href={href} 
-      className="w-10 h-10 rounded-xl bg-surface-2 border border-border-accent flex items-center justify-center text-muted hover:text-primary hover:border-primary/50 transition-all"
+      className="w-11 h-11 rounded-[14px] bg-white/[0.03] border border-white/5 flex items-center justify-center text-muted hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all duration-300 group shadow-sm"
     >
-      <Icon className="w-5 h-5" />
+      <Icon className="w-5 h-5 transition-transform group-hover:scale-110" />
     </a>
   );
 }
