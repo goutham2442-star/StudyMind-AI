@@ -22,7 +22,8 @@ export default async function DashboardPage() {
   // Use cached fetching for dashboard data
   const getDashboardData = unstable_cache(
     async (userId: string, token: string) => {
-      const res = await fetch(`http://localhost:8000/api/stats/dashboard/${userId}`, {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const res = await fetch(`${backendUrl}/api/stats/dashboard/${userId}`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       return res.json();

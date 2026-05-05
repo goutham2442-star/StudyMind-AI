@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAPIClient } from '@/lib/supabase/server';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 async function proxyRequest(req: NextRequest, { params }: { params: { proxy: string[] } }) {
   const supabase = await createAPIClient();

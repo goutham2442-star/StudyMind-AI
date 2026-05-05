@@ -9,6 +9,9 @@ from utils.rate_limiter import limiter
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
+from supabase import create_client
+import google.generativeai as genai
+
 load_dotenv()
 
 # Rate limiter setup
@@ -19,11 +22,6 @@ app = FastAPI(
 )
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-
-# Health check endpoint for Render
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy", "timestamp": time.time()}
 
 # CORS configuration
 allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
@@ -42,7 +40,7 @@ async def startup_event():
     
     # Test Supabase
     supabase_url = os.getenv("SUPABASE_URL")
-    supabase_key = os.getenv("SUPABASE_SERVICE_KEY")
+    supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
     if not supabase_url or not supabase_key:
         print("⚠️ Warning: Supabase credentials missing")
     else:
