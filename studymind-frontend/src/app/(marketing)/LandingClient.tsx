@@ -73,72 +73,77 @@ const AnimatedNumber = ({ value }: { value: string }) => {
 
 export default function LandingPage() {
   return (
-    <div className="relative overflow-x-hidden">
+    <div className="relative overflow-x-hidden mesh-gradient">
       {/* Background Mesh */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none opacity-40">
         <motion.div 
-          animate={{ x: [0, 100, 0], y: [0, 50, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full opacity-30" 
+          animate={{ x: [0, 100, 0], y: [0, 50, 0], rotate: [0, 360] }}
+          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+          className="absolute top-[-10%] left-[-10%] w-[800px] h-[800px] bg-primary/20 blur-[150px] rounded-full" 
         />
         <motion.div 
-          animate={{ x: [0, -100, 0], y: [0, 100, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[40%] right-[10%] w-[600px] h-[600px] bg-secondary/20 blur-[120px] rounded-full opacity-30" 
-        />
-        <motion.div 
-          animate={{ x: [0, 50, 0], y: [0, -100, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[10%] left-[30%] w-[400px] h-[400px] bg-teal-500/10 blur-[120px] rounded-full opacity-20" 
+          animate={{ x: [0, -100, 0], y: [0, 100, 0], rotate: [360, 0] }}
+          transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+          className="absolute top-[30%] right-[-10%] w-[900px] h-[900px] bg-secondary/10 blur-[150px] rounded-full" 
         />
       </div>
 
       {/* Hero Section */}
-      <Section className="pt-40 flex flex-col items-center text-center">
+      <Section className="pt-48 pb-32 flex flex-col items-center text-center relative">
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="px-4 py-1.5 rounded-full glass border-primary/30 text-primary text-xs font-bold uppercase tracking-widest flex items-center gap-2 mb-8 animate-shimmer bg-linear-to-r from-transparent via-white/5 to-transparent bg-size-[200%_100%]"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="px-6 py-2 rounded-2xl glass border-white/10 text-primary text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-3 mb-10 shadow-2xl"
         >
-          <Sparkles className="w-3 h-3 text-warning" /> ✨ Powered by Gemini AI
+          <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          <Sparkles className="w-3.5 h-3.5 text-warning" /> AI-Powered Academic Intelligence
         </motion.div>
 
         <motion.h1 
-          className="text-5xl md:text-8xl font-heading font-extrabold leading-[1.05] tracking-tight max-w-5xl"
+          className="text-6xl md:text-[120px] font-heading font-black leading-[0.95] tracking-tighter max-w-6xl text-glow"
         >
           Study Smarter. <br />
           <span className="text-gradient">Score Higher.</span>
         </motion.h1>
 
         <motion.p 
-          className="mt-8 text-lg md:text-xl text-muted max-w-2xl leading-relaxed font-sans"
+          className="mt-12 text-lg md:text-2xl text-muted max-w-3xl leading-relaxed font-medium opacity-80"
         >
-          Upload your past papers, ask questions, and get instant AI-powered explanations tailored to your university syllabus.
+          The ultimate AI companion for university students. Analyze past papers, generate exam questions, and master your syllabus in minutes.
         </motion.p>
 
-        <motion.div className="flex flex-col sm:flex-row gap-4 mt-12">
+        <motion.div className="flex flex-col sm:flex-row gap-6 mt-16 relative z-10">
           <Link href="/register">
-            <Button size="lg" className="px-10 py-5 text-lg rounded-2xl group">
-              Start For Free <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform ml-2" />
+            <Button size="lg" className="px-12 py-7 text-xl rounded-2xl group shadow-[0_20px_50px_rgba(79,142,247,0.3)]">
+              Get Started Free <ArrowRight className="w-6 h-6 group-hover:translate-x-1.5 transition-transform ml-3" />
             </Button>
           </Link>
-          <Button size="lg" variant="ghost" className="px-10 py-5 text-lg rounded-2xl">
-            <Play className="w-5 h-5 mr-2 fill-current" /> Watch Demo
+          <Button size="lg" variant="secondary" className="px-12 py-7 text-xl rounded-2xl border-white/5 hover:bg-white/10">
+            <Play className="w-6 h-6 mr-3 fill-current" /> Watch Demo
           </Button>
         </motion.div>
 
-        <motion.p className="mt-8 text-xs font-bold text-muted uppercase tracking-widest">
-          Free to use · No credit card · 10,000+ students
-        </motion.p>
+        <div className="mt-12 flex items-center gap-6 opacity-40">
+          <div className="flex -space-x-3">
+            {[1,2,3,4].map(i => (
+              <div key={i} className="w-10 h-10 rounded-full border-2 border-[#050508] bg-surface-2 flex items-center justify-center text-[10px] font-black">
+                {String.fromCharCode(64+i)}
+              </div>
+            ))}
+          </div>
+          <p className="text-[10px] font-black text-muted uppercase tracking-[0.2em]">
+            Trusted by 10,000+ students
+          </p>
+        </div>
 
         {/* Hero Mockup */}
         <motion.div 
-          className="mt-24 w-full max-w-5xl relative group"
-          animate={{ y: [0, -15, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="mt-32 w-full max-w-6xl relative group"
+          animate={{ y: [0, -20, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         >
-          <div className="absolute inset-0 bg-primary/20 blur-[100px] -z-10 opacity-50 group-hover:opacity-80 transition-opacity" />
-          <Card padding="none" className="overflow-hidden border-primary/20 shadow-2xl bg-surface/90">
+          <div className="absolute inset-0 bg-primary/30 blur-[150px] -z-10 opacity-30 group-hover:opacity-60 transition-all duration-700 scale-110" />
+          <Card padding="none" className="overflow-hidden border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.8)] bg-[#050508]/80 backdrop-blur-3xl rounded-[40px]">
             {/* Mockup Header */}
             <div className="bg-surface-2/80 px-6 py-4 border-b border-border-accent flex items-center justify-between">
               <div className="flex items-center gap-3">
