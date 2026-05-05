@@ -280,7 +280,6 @@ export function ChatInterface({ paper, sessionId, onToggleTools, showTools }: Ch
         </div>
       </div>
     </div>
-    </div>
   );
 }
 
