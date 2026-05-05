@@ -10,7 +10,8 @@ import {
   Globe, 
   Lock,
   ExternalLink,
-  Plus
+  Plus,
+  School
 } from 'lucide-react';
 import { Badge, Button, Card, Tooltip } from '@/components/ui';
 import { cn, generateColor } from '@/lib/utils';
@@ -31,91 +32,100 @@ export function LibraryPaperCard({ paper, onPreview, isSaved, onToggleSave }: Li
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4 }}
-      className="h-full"
+      whileHover={{ y: -8, scale: 1.02 }}
+      className="h-full group"
     >
-      <Card hover glow padding="none" className="flex flex-col h-full border-t-4" style={{ borderTopColor: color }}>
-        <div className="p-5 flex-1 flex flex-col">
+      <Card padding="none" className="flex flex-col h-full border border-white/5 bg-linear-to-br from-white/5 to-transparent relative overflow-hidden rounded-[32px] shadow-2xl">
+        <div className="absolute top-0 left-0 w-full h-1.5 shadow-glow" style={{ backgroundColor: color }} />
+        
+        <div className="p-7 flex-1 flex flex-col relative z-10">
           {/* Top Row */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Badge size="sm">{paper.subject}</Badge>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Badge size="sm" className="font-black uppercase tracking-widest text-[9px]">{paper.subject}</Badge>
               {isNew && (
-                <span className="px-2 py-0.5 rounded-full bg-success/10 text-success text-[8px] font-black uppercase tracking-widest animate-pulse">
-                  New
-                </span>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 border border-success/20 text-success text-[8px] font-black uppercase tracking-[0.2em] animate-pulse">
+                  <div className="w-1 h-1 rounded-full bg-success" />
+                  Recent
+                </div>
               )}
             </div>
-            <div className="flex items-center gap-2 text-muted">
+            <div className="flex items-center gap-3 text-muted/40">
               {paper.is_public ? (
-                <Tooltip content="Public Paper"><Globe className="w-3.5 h-3.5" /></Tooltip>
+                <Tooltip content="Institutional Access"><Globe className="w-4 h-4" /></Tooltip>
               ) : (
-                <Tooltip content="Private Paper"><Lock className="w-3.5 h-3.5" /></Tooltip>
+                <Tooltip content="Private Archive"><Lock className="w-4 h-4" /></Tooltip>
               )}
-              <span className="text-[10px] font-bold">{paper.exam_year}</span>
+              <span className="text-[10px] font-black uppercase tracking-tighter">{paper.exam_year}</span>
             </div>
           </div>
 
           {/* Title */}
-          <h3 className="text-base font-bold line-clamp-2 mb-4 hover:text-primary transition-colors cursor-pointer" onClick={() => onPreview(paper)}>
+          <h3 
+            className="text-lg font-black leading-tight mb-5 hover:text-primary transition-colors cursor-pointer text-glow tracking-tight line-clamp-2" 
+            onClick={() => onPreview(paper)}
+          >
             {paper.title}
           </h3>
 
           {/* Meta Info */}
-          <div className="flex items-center gap-4 text-muted text-[10px] font-bold uppercase tracking-wider mb-6">
-            <div className="flex items-center gap-1.5">
-              <Layers className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-5 text-muted text-[9px] font-black uppercase tracking-[0.2em] mb-6 opacity-60">
+            <div className="flex items-center gap-2">
+              <Layers className="w-4 h-4 text-primary/60" />
               {paper.page_count} Pages
             </div>
-            <div className="flex items-center gap-1.5">
-              <Plus className="w-3.5 h-3.5" />
-              {paper.profiles?.university || 'Unknown Uni'}
+            <div className="flex items-center gap-2">
+              <School className="w-4 h-4 text-secondary/60" />
+              {paper.profiles?.university?.split(' ')[0] || 'Uni'} System
             </div>
           </div>
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-1.5 mb-6">
+          <div className="flex flex-wrap gap-2 mb-8">
             {paper.tags?.slice(0, 3).map((tag: string) => (
-              <span key={tag} className="px-2 py-0.5 rounded bg-surface-2 text-[8px] font-bold text-muted uppercase">
-                {tag}
+              <span key={tag} className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-[8px] font-black text-muted/80 uppercase tracking-widest">
+                #{tag}
               </span>
             ))}
             {paper.tags?.length > 3 && (
-              <span className="px-2 py-0.5 rounded bg-surface-2 text-[8px] font-bold text-muted uppercase">
-                +{paper.tags.length - 3} more
+              <span className="px-3 py-1 rounded-lg bg-white/5 border border-white/5 text-[8px] font-black text-primary uppercase tracking-widest">
+                +{paper.tags.length - 3}
               </span>
             )}
           </div>
 
           {/* Actions */}
-          <div className="mt-auto pt-4 border-t border-border-accent/30 flex items-center gap-2">
+          <div className="mt-auto pt-6 border-t border-white/5 flex items-center gap-3">
             <Link href={`/chat/${paper.id}`} className="flex-1">
-              <Button size="sm" className="w-full h-9 text-[10px] font-black uppercase">
-                Ask AI <MessageSquare className="w-3.5 h-3.5 ml-1.5" />
+              <Button size="sm" className="w-full h-11 text-[10px] font-black uppercase tracking-widest rounded-xl shadow-glow group">
+                Analyze AI <MessageSquare className="w-4 h-4 ml-2 group-hover:rotate-12 transition-transform" />
               </Button>
             </Link>
-            <Tooltip content="Preview PDF">
-              <button 
-                onClick={() => onPreview(paper)}
-                className="w-9 h-9 rounded-xl bg-surface-2 border border-border-accent flex items-center justify-center text-muted hover:text-foreground hover:border-primary/50 transition-all"
-              >
-                <Eye className="w-4 h-4" />
-              </button>
-            </Tooltip>
-            <Tooltip content={isSaved ? "Remove from saved" : "Save Paper"}>
-              <button 
-                onClick={() => onToggleSave?.(paper.id)}
-                className={cn(
-                  "w-9 h-9 rounded-xl bg-surface-2 border border-border-accent flex items-center justify-center transition-all",
-                  isSaved ? "text-primary border-primary/50" : "text-muted hover:text-foreground hover:border-primary/50"
-                )}
-              >
-                <Bookmark className={cn("w-4 h-4", isSaved && "fill-current")} />
-              </button>
-            </Tooltip>
+            <div className="flex items-center gap-2">
+              <Tooltip content="Full Preview">
+                <button 
+                  onClick={() => onPreview(paper)}
+                  className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-muted hover:text-primary hover:border-primary/40 transition-all group/btn"
+                >
+                  <Eye className="w-4.5 h-4.5 transition-transform group-hover/btn:scale-110" />
+                </button>
+              </Tooltip>
+              <Tooltip content={isSaved ? "Unarchive" : "Archive"}>
+                <button 
+                  onClick={() => onToggleSave?.(paper.id)}
+                  className={cn(
+                    "w-11 h-11 rounded-xl border flex items-center justify-center transition-all group/btn",
+                    isSaved ? "bg-primary/10 border-primary/30 text-primary" : "bg-white/5 border-white/10 text-muted hover:text-secondary hover:border-secondary/40"
+                  )}
+                >
+                  <Bookmark className={cn("w-4.5 h-4.5 transition-transform group-hover/btn:scale-110", isSaved && "fill-current")} />
+                </button>
+              </Tooltip>
+            </div>
           </div>
         </div>
       </Card>
     </motion.div>
   );
 }
+
