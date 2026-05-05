@@ -27,7 +27,7 @@ export function PaperCard({ id, title, subject, exam_year, page_count }: PaperCa
         
         <div className="p-6 flex flex-col h-full">
           <div className="flex items-start justify-between mb-4">
-            <Badge variant="secondary" size="sm" className="bg-white/5 text-muted-foreground border-white/10 font-black uppercase tracking-widest text-[9px]">{subject}</Badge>
+            <Badge size="sm" className="bg-white/5 text-muted-foreground border-white/10 font-black uppercase tracking-widest text-[9px]">{subject}</Badge>
             <div className="flex items-center gap-1.5 text-muted text-[10px] font-black uppercase tracking-tighter opacity-60">
               <Calendar className="w-3.5 h-3.5" />
               {exam_year}

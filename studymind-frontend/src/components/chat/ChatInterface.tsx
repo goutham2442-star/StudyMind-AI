@@ -150,7 +150,7 @@ export function ChatInterface({ paper, sessionId, onToggleTools, showTools }: Ch
             <div>
               <h2 className="text-sm font-black truncate max-w-[200px] md:max-w-[400px] text-glow tracking-tight">{paper.title}</h2>
               <div className="flex items-center gap-2 mt-0.5">
-                <Badge variant="secondary" size="sm" className="bg-primary/10 text-primary border-primary/20 font-bold uppercase tracking-widest text-[9px]">{paper.subject}</Badge>
+                <Badge size="sm" className="bg-primary/10 text-primary border-primary/20 font-bold uppercase tracking-widest text-[9px]">{paper.subject}</Badge>
                 <div className="w-1 h-1 rounded-full bg-muted/30" />
                 <span className="text-[10px] font-bold text-muted uppercase tracking-widest">{paper.exam_year} Paper</span>
               </div>
