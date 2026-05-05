@@ -80,42 +80,45 @@ export default function RegisterPage() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="space-y-6 max-h-[90vh] overflow-y-auto pr-2 custom-scrollbar"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      className="space-y-8 max-h-[90vh] overflow-y-auto pr-4 custom-scrollbar"
     >
-      <div className="space-y-2">
-        <h1 className="text-3xl font-heading font-extrabold tracking-tight">Create your account 🎓</h1>
-        <p className="text-muted text-sm font-medium">Start studying smarter today</p>
+      <div className="space-y-3">
+        <h1 className="text-4xl font-heading font-black tracking-tighter text-glow">Create Account</h1>
+        <p className="text-muted text-sm font-black uppercase tracking-widest opacity-50">Initialize your academic profile</p>
       </div>
 
-      <form onSubmit={handleRegister} className="space-y-4">
+      <form onSubmit={handleRegister} className="space-y-6">
         <Input
-          label="Full Name"
+          label="Full Legal Name"
           placeholder="John Doe"
           icon={User}
           required
           value={formData.fullName}
           onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+          className="bg-white/5 border-white/10 focus:border-primary transition-all rounded-2xl"
         />
 
         <Input
-          label="Email Address"
+          label="Institutional Email"
           placeholder="name@university.edu"
           type="email"
           icon={Mail}
           required
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          className="bg-white/5 border-white/10 focus:border-primary transition-all rounded-2xl"
         />
 
         <Input
-          label="University"
+          label="University / Institution"
           placeholder="e.g. Oxford University"
           icon={School}
           required
           value={formData.university}
           onChange={(e) => setFormData({ ...formData, university: e.target.value })}
+          className="bg-white/5 border-white/10 focus:border-primary transition-all rounded-2xl"
         />
 
         <div className="grid grid-cols-2 gap-4">
@@ -126,16 +129,19 @@ export default function RegisterPage() {
             required
             value={formData.department}
             onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+            className="bg-white/5 border-white/10 focus:border-primary transition-all rounded-2xl"
           />
           <div className="space-y-2">
-            <label className="text-xs font-bold text-muted uppercase tracking-widest ml-1">Year</label>
+            <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] ml-1">Academic Year</label>
             <select
-              className="w-full h-10 bg-surface border border-border-accent rounded-xl px-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+              className="w-full h-12 bg-white/5 border border-white/10 rounded-2xl px-4 text-xs font-bold uppercase tracking-widest focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all appearance-none cursor-pointer"
               value={formData.yearOfStudy}
               onChange={(e) => setFormData({ ...formData, yearOfStudy: e.target.value })}
             >
               {[1, 2, 3, 4, 5, 6].map(year => (
-                <option key={year} value={year}>{year}{year === 1 ? 'st' : year === 2 ? 'nd' : year === 3 ? 'rd' : 'th'} Year</option>
+                <option key={year} value={year} className="bg-[#0A0A0F]">
+                  {year}{year === 1 ? 'st' : year === 2 ? 'nd' : year === 3 ? 'rd' : 'th'} Year
+                </option>
               ))}
             </select>
           </div>
@@ -143,27 +149,29 @@ export default function RegisterPage() {
 
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Password"
+            label="Access Password"
             placeholder="••••••••"
             type={showPassword ? 'text' : 'password'}
             icon={Lock}
             required
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            className="bg-white/5 border-white/10 focus:border-primary transition-all rounded-2xl"
           />
           <Input
-            label="Confirm"
+            label="Confirm Password"
             placeholder="••••••••"
             type={showPassword ? 'text' : 'password'}
             icon={Lock}
             required
             value={formData.confirmPassword}
             onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+            className="bg-white/5 border-white/10 focus:border-primary transition-all rounded-2xl"
             suffix={
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-muted hover:text-primary transition-colors"
+                className="text-muted hover:text-primary transition-all p-1"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -171,41 +179,43 @@ export default function RegisterPage() {
           />
         </div>
 
-        <label className="flex items-start gap-3 group cursor-pointer">
-          <input 
-            type="checkbox" 
-            className="mt-1 w-4 h-4 rounded border-border-accent text-primary focus:ring-primary bg-surface"
-            checked={formData.agreedToTerms}
-            onChange={(e) => setFormData({ ...formData, agreedToTerms: e.target.checked })}
-          />
-          <span className="text-xs text-muted leading-relaxed group-hover:text-foreground/80 transition-colors">
-            I agree to the <Link href="/terms" className="text-primary font-bold hover:underline">Terms of Service</Link> and <Link href="/privacy" className="text-primary font-bold hover:underline">Privacy Policy</Link>
+        <label className="flex items-start gap-4 group cursor-pointer p-2 rounded-xl hover:bg-white/5 transition-colors">
+          <div className="relative flex items-center h-5">
+            <input 
+              type="checkbox" 
+              className="w-5 h-5 rounded-lg border-white/10 text-primary focus:ring-primary bg-white/5 transition-all"
+              checked={formData.agreedToTerms}
+              onChange={(e) => setFormData({ ...formData, agreedToTerms: e.target.checked })}
+            />
+          </div>
+          <span className="text-[10px] font-black uppercase tracking-[0.1em] text-muted leading-tight group-hover:text-foreground/80 transition-colors">
+            I acknowledge the <Link href="/terms" className="text-primary hover:text-primary/80 transition-colors">Terms of Service</Link> and <Link href="/privacy" className="text-primary hover:text-primary/80 transition-colors">Privacy Protocol</Link>
           </span>
         </label>
 
         <Button 
           type="submit" 
-          className="w-full h-12 text-base group" 
+          className="w-full h-14 text-sm font-black uppercase tracking-widest group rounded-2xl shadow-[0_15px_30px_rgba(79,142,247,0.2)]" 
           loading={loading}
         >
-          Create Account <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+          Initialize Account <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
         </Button>
       </form>
 
       <div className="relative flex items-center justify-center">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-border-accent"></div>
+          <div className="w-full border-t border-white/5"></div>
         </div>
-        <span className="relative px-4 bg-background text-[10px] font-bold text-muted uppercase tracking-widest">
-          or continue with
+        <span className="relative px-6 bg-[#08080C] text-[9px] font-black text-muted uppercase tracking-[0.3em] opacity-40">
+          Federated Identity
         </span>
       </div>
 
       <button
         type="button"
-        className="w-full h-12 flex items-center justify-center gap-3 bg-white text-black font-bold rounded-xl hover:bg-white/90 transition-all shadow-sm"
+        className="w-full h-14 flex items-center justify-center gap-4 bg-white text-black font-black text-[11px] uppercase tracking-widest rounded-2xl hover:bg-white/90 transition-all shadow-xl group"
       >
-        <svg className="w-5 h-5" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 transition-transform group-hover:scale-110" viewBox="0 0 24 24">
           <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
           <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
           <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
@@ -214,10 +224,10 @@ export default function RegisterPage() {
         Continue with Google
       </button>
 
-      <p className="text-center text-sm text-muted">
-        Already have an account?{' '}
-        <Link href="/login" className="text-primary font-bold hover:underline">
-          Sign in
+      <p className="text-center text-xs font-black uppercase tracking-[0.2em] text-muted opacity-60">
+        Already registered?{' '}
+        <Link href="/login" className="text-primary hover:text-primary/80 transition-colors">
+          Sign In
         </Link>
       </p>
     </motion.div>
