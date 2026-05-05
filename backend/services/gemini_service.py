@@ -8,14 +8,18 @@ load_dotenv()
 
 # Initialize Gemini
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+model = None
+
 if not GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY not found in environment variables.")
-
-genai.configure(api_key=GEMINI_API_KEY)
-
-# Use Gemini 1.5 Pro or Flash depending on requirements
-# Pro is better for deep analysis, Flash is faster
-model = genai.GenerativeModel('gemini-1.5-flash')
+    print("⚠️ WARNING: GEMINI_API_KEY not found in environment variables. AI features will be disabled.")
+else:
+    try:
+        genai.configure(api_key=GEMINI_API_KEY)
+        # Use Gemini 1.5 Pro or Flash depending on requirements
+        # Pro is better for deep analysis, Flash is faster
+        model = genai.GenerativeModel('gemini-1.5-flash')
+    except Exception as e:
+        print(f"❌ ERROR: Failed to configure Gemini: {e}")
 
 async def analyze_paper(extracted_text: str) -> Dict[str, Any]:
     """

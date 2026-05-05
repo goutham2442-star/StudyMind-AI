@@ -3,11 +3,12 @@ import { createAPIClient } from '@/lib/supabase/server';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-async function proxyRequest(req: NextRequest, { params }: { params: { proxy: string[] } }) {
+async function proxyRequest(req: NextRequest, { params }: { params: Promise<{ proxy: string[] }> }) {
   const supabase = await createAPIClient();
   const { data: { session } } = await supabase.auth.getSession();
   
-  const path = params.proxy.join('/');
+  const { proxy } = await params;
+  const path = proxy.join('/');
   const searchParams = req.nextUrl.searchParams.toString();
   const url = `${BACKEND_URL}/api/${path}${searchParams ? `?${searchParams}` : ''}`;
 
@@ -27,11 +28,31 @@ async function proxyRequest(req: NextRequest, { params }: { params: { proxy: str
       cache: 'no-store'
     });
 
-    const data = await response.json();
-    return NextResponse.json(data, { status: response.status });
+    // Try to parse as JSON, but handle non-JSON error pages
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      return NextResponse.json(data, { status: response.status });
+    } else {
+      const text = await response.text();
+      console.error('Non-JSON Proxy Response:', text);
+      return NextResponse.json({ 
+        error: 'Backend returned non-JSON response', 
+        status: response.status,
+        details: text.slice(0, 200) 
+      }, { status: 500 });
+    }
   } catch (error: any) {
-    console.error('Proxy Error:', error);
-    return NextResponse.json({ error: 'Proxy request failed', details: error.message }, { status: 500 });
+    console.error('Proxy Connection Error:', {
+      url,
+      method: req.method,
+      error: error.message
+    });
+    return NextResponse.json({ 
+      error: 'Backend connection failed', 
+      details: error.message,
+      hint: 'Ensure the backend is running at ' + BACKEND_URL 
+    }, { status: 500 });
   }
 }
 

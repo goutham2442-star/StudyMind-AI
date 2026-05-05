@@ -42,10 +42,12 @@ async def get_dashboard_stats(user_id: str, current_user: str = Depends(get_curr
             .limit(3) \
             .execute()
 
-        # 6. Activity (last 14 days)
+        # 6. Activity (last 14 days) - Filter by user via session join
         fourteen_days_ago = (datetime.now() - timedelta(days=14)).isoformat()
+        # Since messages table doesn't have user_id, we join with chat_sessions
         activity_task = supabase.table("messages") \
-            .select("created_at") \
+            .select("created_at, chat_sessions!inner(user_id)") \
+            .eq("chat_sessions.user_id", user_id) \
             .eq("role", "user") \
             .gte("created_at", fourteen_days_ago) \
             .execute()
@@ -106,10 +108,14 @@ async def get_user_detailed_stats(user_id: str, current_user: str = Depends(get_
 
     try:
         # 1. Profile for member since
-        profile = supabase.table("profiles").select("created_at").eq("id", user_id).single().execute().data
+        profile_res = supabase.table("profiles").select("created_at").eq("id", user_id).single().execute()
+        profile = profile_res.data
+        if not profile:
+            raise HTTPException(status_code=404, detail="User profile not found. Please complete your profile setup.")
         
         # 2. Papers by subject (Full list)
-        papers = supabase.table("papers").select("subject, created_at").eq("user_id", user_id).execute().data
+        papers_res = supabase.table("papers").select("subject, created_at").eq("user_id", user_id).execute()
+        papers = papers_res.data or []
         subjects_map = {}
         for p in papers:
             s = p['subject']
@@ -131,11 +137,13 @@ async def get_user_detailed_stats(user_id: str, current_user: str = Depends(get_
 
         # 4. Daily activity (Last 30 days)
         thirty_days_ago = (datetime.now() - timedelta(days=30)).isoformat()
-        messages = supabase.table("messages") \
-            .select("created_at") \
+        messages_res = supabase.table("messages") \
+            .select("created_at, chat_sessions!inner(user_id)") \
+            .eq("chat_sessions.user_id", user_id) \
             .eq("role", "user") \
             .gte("created_at", thirty_days_ago) \
-            .execute().data
+            .execute()
+        messages = messages_res.data or []
             
         daily_map = {}
         for i in range(30):
@@ -151,8 +159,12 @@ async def get_user_detailed_stats(user_id: str, current_user: str = Depends(get_
         saved_count = supabase.table("saved_questions").select("id", count="exact").eq("user_id", user_id).execute().count
         
         # 6. Days active (Distinct days with messages)
-        all_messages = supabase.table("messages").select("created_at").execute().data
-        active_days = len(set(m['created_at'][:10] for m in all_messages))
+        all_user_messages_res = supabase.table("messages") \
+            .select("created_at, chat_sessions!inner(user_id)") \
+            .eq("chat_sessions.user_id", user_id) \
+            .execute()
+        all_user_messages = all_user_messages_res.data or []
+        active_days = len(set(m['created_at'][:10] for m in all_user_messages))
 
         return {
             "papers_by_subject": papers_by_subject,
@@ -160,8 +172,9 @@ async def get_user_detailed_stats(user_id: str, current_user: str = Depends(get_
             "daily_activity": daily_activity,
             "total_saved_questions": saved_count or 0,
             "days_active": active_days,
-            "member_since": profile['created_at']
+            "member_since": profile.get('created_at', datetime.now())
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        if isinstance(e, HTTPException): raise e
+        raise HTTPException(status_code=500, detail=f"Stats retrieval error: {str(e)}")

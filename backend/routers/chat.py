@@ -100,7 +100,7 @@ async def send_message(
     user_id: str = Depends(get_current_user)
 ):
     # Sanitize input message
-    request.message = sanitize_text(request.message)
+    request.content = sanitize_text(request.content)
     validate_uuid(request.paper_id, "Paper ID")
     validate_uuid(request.session_id, "Session ID")
     """

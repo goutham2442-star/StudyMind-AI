@@ -3,13 +3,15 @@
 import { cn, generateColor } from '@/lib/utils';
 
 interface BadgeProps {
-  children: string;
+  children: React.ReactNode;
   className?: string;
   size?: 'sm' | 'md';
 }
 
 export function Badge({ children, className, size = 'md' }: BadgeProps) {
-  const color = generateColor(children);
+  // Use children as string for color generation, fallback to "default" if not a string
+  const colorKey = typeof children === 'string' ? children : String(children);
+  const color = generateColor(colorKey);
   
   return (
     <span

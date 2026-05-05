@@ -108,7 +108,7 @@ export function StatsTab({ stats, profile }: any) {
 
       <div className="text-center pt-8">
         <p className="text-[10px] font-bold text-muted uppercase tracking-[0.2em]">
-          Member since {new Date(profile?.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+          Member since {profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Joining...'}
         </p>
       </div>
     </div>

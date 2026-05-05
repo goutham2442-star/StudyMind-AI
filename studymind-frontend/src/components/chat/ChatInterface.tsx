@@ -20,11 +20,12 @@ import axios from 'axios';
 
 interface ChatInterfaceProps {
   paper: any;
+  sessionId: string | null;
   onToggleTools: () => void;
   showTools: boolean;
 }
 
-export function ChatInterface({ paper, onToggleTools, showTools }: ChatInterfaceProps) {
+export function ChatInterface({ paper, sessionId, onToggleTools, showTools }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<any[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -77,8 +78,8 @@ export function ChatInterface({ paper, onToggleTools, showTools }: ChatInterface
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           paper_id: paper.id,
-          message: msg,
-          user_id: user?.id
+          session_id: sessionId,
+          content: msg
         })
       });
 

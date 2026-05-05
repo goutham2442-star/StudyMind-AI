@@ -30,8 +30,10 @@ export function DropZone({ file, onFileSelect }: DropZoneProps) {
       } else {
         toast.error('Upload failed');
       }
-    }
+    },
   });
+
+  const { onDrag, onDragStart, onDragEnd, onDragOver, ...rootProps } = getRootProps() as any;
 
   return (
     <div className="w-full">
@@ -42,7 +44,7 @@ export function DropZone({ file, onFileSelect }: DropZoneProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            {...getRootProps()}
+            {...rootProps}
             className={cn(
               "relative h-72 border-2 border-dashed rounded-3xl flex flex-col items-center justify-center transition-all cursor-pointer group overflow-hidden",
               isDragActive 

@@ -13,7 +13,8 @@ import {
   Layers,
   History,
   TrendingUp,
-  Inbox
+  Inbox,
+  BookOpen
 } from 'lucide-react';
 import { Button, Input, Card, Badge, Skeleton, PaperCardSkeleton } from '@/components/ui';
 import { LibraryPaperCard } from './LibraryPaperCard';
@@ -162,19 +163,19 @@ export function LibraryClient({ initialPapers, totalCount }: { initialPapers: an
             <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
               <FilterSelect 
                 value={filters.subject} 
-                onChange={(v) => setFilters(prev => ({ ...prev, subject: v }))}
+                onChange={(v: string) => setFilters(prev => ({ ...prev, subject: v }))}
                 options={['All Subjects', ...SUBJECTS]}
                 icon={BookOpen}
               />
               <FilterSelect 
                 value={filters.year} 
-                onChange={(v) => setFilters(prev => ({ ...prev, year: v }))}
+                onChange={(v: string) => setFilters(prev => ({ ...prev, year: v }))}
                 options={['All Years', ...YEARS.map(String)]}
                 icon={Calendar}
               />
               <FilterSelect 
                 value={filters.sort} 
-                onChange={(v) => setFilters(prev => ({ ...prev, sort: v }))}
+                onChange={(v: string) => setFilters(prev => ({ ...prev, sort: v }))}
                 options={[
                   { label: 'Newest', value: 'newest' },
                   { label: 'Oldest', value: 'oldest' },
@@ -277,15 +278,22 @@ export function LibraryClient({ initialPapers, totalCount }: { initialPapers: an
 
 // --- Internal Helpers ---
 
-function FilterSelect({ value, onChange, options, icon: Icon }: any) {
+interface FilterSelectProps {
+  value: string;
+  onChange: (value: string) => void;
+  options: (string | { label: string; value: string })[];
+  icon: any;
+}
+
+function FilterSelect({ value, onChange, options, icon: Icon }: FilterSelectProps) {
   return (
     <div className="relative group">
       <select 
-        value={typeof value === 'string' ? value : value.value} 
+        value={value} 
         onChange={(e) => onChange(e.target.value)}
         className="appearance-none h-10 bg-surface-2 border border-border-accent rounded-xl pl-10 pr-10 text-xs font-bold uppercase tracking-wider outline-none hover:border-primary/50 transition-all cursor-pointer"
       >
-        {options.map((opt: any) => (
+        {options.map((opt) => (
           <option key={typeof opt === 'string' ? opt : opt.value} value={typeof opt === 'string' ? opt : opt.value}>
             {typeof opt === 'string' ? opt : opt.label}
           </option>
@@ -297,7 +305,13 @@ function FilterSelect({ value, onChange, options, icon: Icon }: any) {
   );
 }
 
-function TabButton({ active, onClick, label }: any) {
+interface TabButtonProps {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+}
+
+function TabButton({ active, onClick, label }: TabButtonProps) {
   return (
     <button 
       onClick={onClick}

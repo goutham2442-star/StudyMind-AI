@@ -92,20 +92,26 @@ export function StudyTools({ paper }: { paper: any }) {
               exit={{ opacity: 0, x: -10 }}
               className="space-y-4"
             >
-              <h3 className="text-xs font-black uppercase tracking-widest text-muted mb-4">Key Topics Extracted</h3>
-              {(paper.key_topics || ['Load Balancing', 'DNS', 'TCP 3-Way Handshake', 'Subnetting', 'BGP Routing']).map((topic: string) => (
-                <button
-                  key={topic}
-                  className="w-full p-4 bg-surface-2 border border-border-accent rounded-xl text-left hover:border-primary/50 transition-all group"
-                  onClick={() => window.dispatchEvent(new CustomEvent('send-chat-message', { detail: `Explain ${topic} in detail from this paper.` }))}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <p className="text-sm font-bold text-foreground">{topic}</p>
-                    <Plus className="w-3.5 h-3.5 text-muted group-hover:text-primary" />
-                  </div>
-                  <p className="text-[10px] text-muted font-medium line-clamp-1">Click to explain in detail</p>
-                </button>
-              ))}
+              {(paper.key_topics || []).map((topicItem: any, i: number) => {
+                const topicName = typeof topicItem === 'string' ? topicItem : topicItem.topic;
+                const topicDesc = typeof topicItem === 'string' ? 'Click to explain in detail' : topicItem.description;
+                
+                return (
+                  <button
+                    key={i}
+                    className="w-full p-4 bg-surface-2 border border-border-accent rounded-xl text-left hover:border-primary/50 transition-all group"
+                    onClick={() => window.dispatchEvent(new CustomEvent('send-chat-message', { 
+                      detail: `Explain ${topicName} in detail from this paper.` 
+                    }))}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="text-sm font-bold text-foreground">{topicName}</p>
+                      <Plus className="w-3.5 h-3.5 text-muted group-hover:text-primary" />
+                    </div>
+                    <p className="text-[10px] text-muted font-medium line-clamp-2">{topicDesc}</p>
+                  </button>
+                );
+              })}
             </motion.div>
           )}
 
@@ -118,37 +124,42 @@ export function StudyTools({ paper }: { paper: any }) {
               className="space-y-4"
             >
               <h3 className="text-xs font-black uppercase tracking-widest text-muted mb-4">Predicted Questions</h3>
-              {(paper.exam_questions || [
-                "How does the OSI model handle packet loss?",
-                "Define the difference between IPv4 and IPv6 headers.",
-                "Explain the role of a default gateway in a subnet.",
-                "Describe the congestion control mechanism in TCP.",
-                "What is the significance of the TTL field in IP packets?"
-              ]).map((q: string, i: number) => (
-                <div key={i} className="space-y-2">
-                  <button 
-                    onClick={() => setExpandedQuestion(expandedQuestion === i ? null : i)}
-                    className="w-full p-4 bg-surface-2 border border-border-accent rounded-xl text-left hover:border-primary/50 transition-all group flex items-start gap-3"
-                  >
-                    <span className="text-xs font-black text-primary mt-0.5">Q{i+1}</span>
-                    <span className="text-xs font-bold flex-1">{q}</span>
-                    <ChevronDown className={cn("w-4 h-4 text-muted transition-transform", expandedQuestion === i && "rotate-180")} />
-                  </button>
-                  {expandedQuestion === i && (
-                    <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} className="overflow-hidden">
-                      <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Model Answer</p>
-                        <p className="text-xs leading-relaxed text-muted">Thinking... Generating optimized answer based on university syllabus.</p>
-                        <div className="flex gap-2 mt-4">
-                          <Button size="sm" variant="ghost" className="h-7 text-[8px] font-black uppercase tracking-widest">
-                            <Bookmark className="w-3 h-3 mr-1" /> Save Q&A
-                          </Button>
-                        </div>
+              {(paper.exam_questions || []).map((qItem: any, i: number) => {
+                const questionText = typeof qItem === 'string' ? qItem : qItem.question;
+                const answerText = typeof qItem === 'string' ? "Thinking... Generating optimized answer based on university syllabus." : qItem.answer;
+                const marks = typeof qItem === 'object' ? qItem.marks : null;
+
+                return (
+                  <div key={i} className="space-y-2">
+                    <button 
+                      onClick={() => setExpandedQuestion(expandedQuestion === i ? null : i)}
+                      className="w-full p-4 bg-surface-2 border border-border-accent rounded-xl text-left hover:border-primary/50 transition-all group flex items-start gap-3"
+                    >
+                      <span className="text-xs font-black text-primary mt-0.5">Q{i+1}</span>
+                      <div className="flex-1">
+                        <span className="text-xs font-bold block">{questionText}</span>
+                        {marks && <span className="text-[9px] text-muted font-bold uppercase tracking-wider mt-1 block">[{marks} Marks]</span>}
                       </div>
-                    </motion.div>
-                  )}
-                </div>
-              ))}
+                      <ChevronDown className={cn("w-4 h-4 text-muted transition-transform", expandedQuestion === i && "rotate-180")} />
+                    </button>
+                    {expandedQuestion === i && (
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="overflow-hidden">
+                        <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Model Answer</p>
+                          <p className="text-xs leading-relaxed text-muted">{answerText}</p>
+                          <div className="flex gap-2 mt-4">
+                            <Button size="sm" variant="ghost" className="h-7 text-[8px] font-black uppercase tracking-widest" onClick={() => {
+                              window.dispatchEvent(new CustomEvent('save-qa', { detail: { question: questionText, answer: answerText } }));
+                            }}>
+                              <Bookmark className="w-3 h-3 mr-1" /> Save Q&A
+                            </Button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+                );
+              })}
               <Button variant="secondary" className="w-full h-10 text-[10px] font-black uppercase mt-4">
                 Generate 5 More
               </Button>

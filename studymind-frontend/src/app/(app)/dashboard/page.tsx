@@ -22,17 +22,29 @@ export default async function DashboardPage() {
   // Use cached fetching for dashboard data
   const getDashboardData = unstable_cache(
     async (userId: string, token: string) => {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const res = await fetch(`${backendUrl}/api/stats/dashboard/${userId}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      return res.json();
+      try {
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const res = await fetch(`${backendUrl}/api/stats/dashboard/${userId}`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+          signal: AbortSignal.timeout(5000), // Timeout after 5 seconds
+        });
+        
+        if (!res.ok) {
+          console.error(`Dashboard Fetch Error: ${res.status} ${res.statusText}`);
+          return null;
+        }
+        
+        return res.json();
+      } catch (error) {
+        console.error('Dashboard Data Fetch Failed:', error);
+        return null;
+      }
     },
     [`dashboard-${session.user.id}`],
     { revalidate: 60, tags: [`dashboard-${session.user.id}`] }
   );
 
-  const dashboardData = await getDashboardData(session.user.id, session.access_token);
+  const dashboardData = await getDashboardData(session.user.id, session.access_token) || {};
 
   const stats = {
     totalPapers: dashboardData.total_papers || 0,

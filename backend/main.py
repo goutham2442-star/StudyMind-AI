@@ -36,30 +36,24 @@ app.add_middleware(
 # Startup event: test Supabase + Gemini connections
 @app.on_event("startup")
 async def startup_event():
-    print("🚀 Starting StudyMind AI API...")
+    print("\n" + "="*50)
+    print("🚀 StudyMind AI API is starting...")
+    print("="*50)
     
-    # Test Supabase
-    supabase_url = os.getenv("SUPABASE_URL")
-    supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-    if not supabase_url or not supabase_key:
-        print("⚠️ Warning: Supabase credentials missing")
+    from services.supabase_service import supabase, SUPABASE_URL
+    from services.gemini_service import model, GEMINI_API_KEY
+    
+    if supabase:
+        print(f"✅ Supabase: Connected to {SUPABASE_URL}")
     else:
-        try:
-            create_client(supabase_url, supabase_key)
-            print("✅ Supabase connection successful")
-        except Exception as e:
-            print(f"❌ Supabase connection failed: {e}")
-
-    # Test Gemini
-    gemini_key = os.getenv("GEMINI_API_KEY")
-    if not gemini_key:
-        print("⚠️ Warning: Gemini API key missing")
+        print("❌ Supabase: MISSING CONFIGURATION (Check .env)")
+        
+    if model:
+        print("✅ Gemini: AI Model Initialized")
     else:
-        try:
-            genai.configure(api_key=gemini_key)
-            print("✅ Gemini API configured")
-        except Exception as e:
-            print(f"❌ Gemini configuration failed: {e}")
+        print("❌ Gemini: MISSING API KEY (Check .env)")
+        
+    print("="*50 + "\n")
 
 # Include routers
 app.include_router(auth.router)
@@ -84,11 +78,18 @@ async def internal_server_error_handler(request: Request, exc):
 
 @app.get("/health")
 async def health_check():
+    from services.supabase_service import supabase
+    from services.gemini_service import model
+    
     return {
         "status": "online",
         "timestamp": time.time(),
         "version": "1.0.0",
-        "service": "StudyMind AI API"
+        "service": "StudyMind AI API",
+        "integrations": {
+            "supabase": "connected" if supabase else "missing_config",
+            "gemini": "connected" if model else "missing_config"
+        }
     }
 
 if __name__ == "__main__":

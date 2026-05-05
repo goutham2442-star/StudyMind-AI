@@ -20,11 +20,12 @@ async def create_or_update_profile(
     
     try:
         response = supabase.table("profiles").upsert(profile_data).execute()
-        if not response.data:
-            raise HTTPException(status_code=400, detail="Failed to update profile")
+        if not response.data or len(response.data) == 0:
+            raise HTTPException(status_code=400, detail="Failed to update profile - no data returned")
         return response.data[0]
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        if isinstance(e, HTTPException): raise e
+        raise HTTPException(status_code=500, detail=f"Database error during upsert: {str(e)}")
 
 @router.get("/profile/{user_id}", response_model=ProfileResponse)
 async def get_profile(user_id: str, current_user: str = Depends(get_current_user)):
@@ -33,11 +34,12 @@ async def get_profile(user_id: str, current_user: str = Depends(get_current_user
     """
     try:
         response = supabase.table("profiles").select("*").eq("id", user_id).execute()
-        if not response.data:
+        if not response.data or len(response.data) == 0:
             raise HTTPException(status_code=404, detail="Profile not found")
         return response.data[0]
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        if isinstance(e, HTTPException): raise e
+        raise HTTPException(status_code=500, detail=f"Database error during fetch: {str(e)}")
 
 @router.put("/profile", response_model=ProfileResponse)
 async def update_profile(
@@ -51,11 +53,12 @@ async def update_profile(
     
     try:
         response = supabase.table("profiles").update(update_data).eq("id", user_id).execute()
-        if not response.data:
-            raise HTTPException(status_code=404, detail="Profile not found")
+        if not response.data or len(response.data) == 0:
+            raise HTTPException(status_code=404, detail="Profile not found or no changes made")
         return response.data[0]
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        if isinstance(e, HTTPException): raise e
+        raise HTTPException(status_code=500, detail=f"Database error during update: {str(e)}")
 
 @router.post("/avatar")
 async def upload_avatar(

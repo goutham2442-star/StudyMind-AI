@@ -99,18 +99,21 @@ async def upload_paper(
             "tags": tag_list
         }
         
-        response = supabase.table("papers").insert(paper_data).execute()
-        if not response.data:
-            raise HTTPException(status_code=500, detail="Failed to save paper record")
+        db_response = supabase.table("papers").insert(paper_data).execute()
+        if not db_response.data or len(db_response.data) == 0:
+            raise HTTPException(status_code=500, detail="Failed to save paper record to database")
         
         # 6. Update Profile Stats
-        # Fetch current count and increment
-        profile_res = supabase.table("profiles").select("total_papers").eq("id", user_id).single().execute()
-        if profile_res.data:
-            new_count = (profile_res.data.get("total_papers") or 0) + 1
-            supabase.table("profiles").update({"total_papers": new_count}).eq("id", user_id).execute()
+        try:
+            profile_res = supabase.table("profiles").select("total_papers").eq("id", user_id).single().execute()
+            if profile_res.data:
+                new_count = (profile_res.data.get("total_papers") or 0) + 1
+                supabase.table("profiles").update({"total_papers": new_count}).eq("id", user_id).execute()
+        except Exception as profile_err:
+            print(f"Stats update failed (non-critical): {profile_err}")
+            # We don't fail the whole request if stats update fails
 
-        return response.data[0]
+        return db_response.data[0]
 
     except Exception as e:
         # Cleanup storage if record wasn't saved
@@ -192,7 +195,7 @@ async def get_paper(
     except Exception as e:
         if isinstance(e, HTTPException):
             raise e
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Paper retrieval error: {str(e)}")
 
 @router.delete("/{paper_id}")
 async def delete_paper(
@@ -219,13 +222,16 @@ async def delete_paper(
         supabase.table("papers").delete().eq("id", paper_id).execute()
         
         # 3. Update Profile Stats
-        profile_res = supabase.table("profiles").select("total_papers").eq("id", current_user_id).single().execute()
-        if profile_res.data:
-            new_count = max(0, (profile_res.data.get("total_papers") or 1) - 1)
-            supabase.table("profiles").update({"total_papers": new_count}).eq("id", current_user_id).execute()
-            
+        try:
+            profile_res = supabase.table("profiles").select("total_papers").eq("id", current_user_id).single().execute()
+            if profile_res.data:
+                new_count = max(0, (profile_res.data.get("total_papers") or 1) - 1)
+                supabase.table("profiles").update({"total_papers": new_count}).eq("id", current_user_id).execute()
+        except Exception as profile_err:
+            print(f"Stats update failed (non-critical): {profile_err}")
+
         return {"success": True}
     except Exception as e:
         if isinstance(e, HTTPException):
             raise e
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Paper deletion error: {str(e)}")

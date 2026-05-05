@@ -13,8 +13,9 @@ export const dynamic = 'force-dynamic';
 export default async function LibraryPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const sp = await searchParams;
   const supabase = await createServerClient();
   const { data: { session } } = await supabase.auth.getSession();
 
@@ -28,10 +29,10 @@ export default async function LibraryPage({
     .select('*, profiles(university)', { count: 'exact' });
 
   // Apply basic initial filters from searchParams if any
-  const q = searchParams.q as string;
-  const subject = searchParams.subject as string;
-  const year = searchParams.year as string;
-  const tab = searchParams.tab as string;
+  const q = sp.q as string;
+  const subject = sp.subject as string;
+  const year = sp.year as string;
+  const tab = sp.tab as string;
 
   if (q) query = query.or(`title.ilike.%${q}%,subject.ilike.%${q}%`);
   if (subject && subject !== 'All Subjects') query = query.eq('subject', subject);

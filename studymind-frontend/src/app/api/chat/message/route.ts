@@ -23,6 +23,16 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(body),
     });
 
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error('Chat Backend Error:', errorData);
+      return NextResponse.json({ 
+        error: 'Chat service error', 
+        status: response.status,
+        details: errorData 
+      }, { status: response.status });
+    }
+
     // Return the response as a stream for SSE
     return new Response(response.body, {
       headers: {
@@ -32,7 +42,10 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error: any) {
-    console.error('Chat Proxy Error:', error);
-    return NextResponse.json({ error: 'Chat streaming failed', details: error.message }, { status: 500 });
+    console.error('Chat Connection Error:', error);
+    return NextResponse.json({ 
+      error: 'Failed to connect to chat service', 
+      details: error.message 
+    }, { status: 500 });
   }
 }

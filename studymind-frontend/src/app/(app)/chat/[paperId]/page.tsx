@@ -7,11 +7,12 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { paperId } = await params;
   const supabase = await createServerClient();
   const { data: paper } = await supabase
     .from('papers')
     .select('title, subject')
-    .eq('id', params.paperId)
+    .eq('id', paperId)
     .single();
 
   return {

@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 import { CheckCircle, ArrowRight, Upload, BookOpen, MessageSquare, ChevronDown } from 'lucide-react';
 import { Button, Card, Badge } from '@/components/ui';
 import Link from 'next/link';

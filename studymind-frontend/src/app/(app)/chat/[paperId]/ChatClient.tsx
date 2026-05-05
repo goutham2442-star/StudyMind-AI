@@ -107,6 +107,7 @@ export default function ChatPage() {
       {/* Main Chat Area */}
       <ChatInterface 
         paper={paper} 
+        sessionId={currentSessionId}
         showTools={showTools}
         onToggleTools={() => setShowTools(!showTools)}
       />
