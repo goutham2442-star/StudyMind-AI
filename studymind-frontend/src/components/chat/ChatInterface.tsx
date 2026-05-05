@@ -136,20 +136,24 @@ export function ChatInterface({ paper, sessionId, onToggleTools, showTools }: Ch
   }, []);
 
   return (
-    <div className="flex-1 flex flex-col h-full relative bg-background">
+    <div className="flex-1 flex flex-col h-full relative bg-background/30">
       {/* Header */}
-      <header className="h-16 border-b border-border-accent flex items-center justify-between px-6 shrink-0 bg-background/50 backdrop-blur-md z-10">
-        <div className="flex items-center gap-4">
-          <Link href="/library" className="p-2 hover:bg-surface-2 rounded-lg transition-colors lg:hidden">
+      <header className="h-20 border-b border-white/5 flex items-center justify-between px-8 shrink-0 bg-background/40 backdrop-blur-2xl z-10">
+        <div className="flex items-center gap-6">
+          <Link href="/library" className="p-2.5 hover:bg-white/5 rounded-xl transition-all lg:hidden border border-transparent hover:border-white/10">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-surface-2 flex items-center justify-center">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary/20 to-secondary/20 flex items-center justify-center border border-primary/20">
               <FileText className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-sm font-bold truncate max-w-[200px] md:max-w-[400px]">{paper.title}</h2>
-              <Badge size="sm" className="mt-0.5">{paper.subject}</Badge>
+              <h2 className="text-sm font-black truncate max-w-[200px] md:max-w-[400px] text-glow tracking-tight">{paper.title}</h2>
+              <div className="flex items-center gap-2 mt-0.5">
+                <Badge variant="secondary" size="sm" className="bg-primary/10 text-primary border-primary/20 font-bold uppercase tracking-widest text-[9px]">{paper.subject}</Badge>
+                <div className="w-1 h-1 rounded-full bg-muted/30" />
+                <span className="text-[10px] font-bold text-muted uppercase tracking-widest">{paper.exam_year} Paper</span>
+              </div>
             </div>
           </div>
         </div>
@@ -158,7 +162,7 @@ export function ChatInterface({ paper, sessionId, onToggleTools, showTools }: Ch
           variant={showTools ? "primary" : "secondary"} 
           size="sm" 
           onClick={onToggleTools}
-          className="h-9 text-[10px] font-black uppercase"
+          className="h-10 text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg"
         >
           <PanelRight className="w-4 h-4 mr-2" />
           Study Tools
@@ -169,27 +173,30 @@ export function ChatInterface({ paper, sessionId, onToggleTools, showTools }: Ch
       <div 
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar"
+        className="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar"
       >
         {messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-center space-y-8">
+          <div className="h-full flex flex-col items-center justify-center text-center space-y-10">
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="w-20 h-20 rounded-[32px] bg-linear-to-br from-primary to-secondary flex items-center justify-center shadow-glow"
+              initial={{ scale: 0.8, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              className="w-24 h-24 rounded-[36px] bg-linear-to-br from-primary to-secondary flex items-center justify-center shadow-[0_20px_50px_rgba(79,142,247,0.3)] relative group"
             >
-              <Brain className="text-white w-10 h-10" />
+              <div className="absolute inset-0 rounded-[36px] bg-white opacity-0 group-hover:opacity-20 transition-opacity" />
+              <Brain className="text-white w-12 h-12" />
             </motion.div>
-            <div className="space-y-2">
-              <h1 className="text-2xl font-heading font-black">Hi! I've read this paper.</h1>
-              <p className="text-muted text-sm max-w-sm">Ask me anything about <span className="text-foreground font-bold">{paper.title}</span> or use the tools on the right.</p>
+            <div className="space-y-3">
+              <h1 className="text-3xl font-heading font-black tracking-tight text-glow">I've analyzed your paper.</h1>
+              <p className="text-muted text-sm max-w-sm font-medium leading-relaxed">
+                Ask me anything about <span className="text-foreground font-bold">{paper.title}</span> or use the smart tools on the right.
+              </p>
             </div>
-            <div className="flex flex-wrap justify-center gap-3 max-w-lg">
+            <div className="flex flex-wrap justify-center gap-4 max-w-xl">
               {suggestions.map((s) => (
                 <button
                   key={s}
                   onClick={() => handleSend(undefined, s)}
-                  className="px-4 py-2 rounded-xl bg-surface-2 border border-border-accent hover:border-primary/50 text-xs font-bold text-muted hover:text-foreground transition-all"
+                  className="px-6 py-3 rounded-2xl bg-white/5 border border-white/5 hover:border-primary/50 hover:bg-primary/5 text-[11px] font-black text-muted hover:text-primary transition-all uppercase tracking-widest shadow-sm"
                 >
                   {s}
                 </button>
@@ -203,16 +210,16 @@ export function ChatInterface({ paper, sessionId, onToggleTools, showTools }: Ch
         )}
         
         {loading && messages[messages.length-1]?.role === 'user' && (
-          <div className="flex gap-4">
-            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary to-secondary flex items-center justify-center shrink-0 shadow-glow animate-pulse">
+          <div className="flex gap-5">
+            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary to-secondary flex items-center justify-center shrink-0 shadow-glow animate-pulse">
               <Brain className="text-white w-5 h-5" />
             </div>
-            <div className="bg-surface-2 p-4 rounded-2xl flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-widest text-primary">StudyMind is thinking</span>
-              <div className="flex gap-1">
-                <span className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div className="glass-card p-5 rounded-2xl flex items-center gap-3">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">AI is synthesizing response</span>
+              <div className="flex gap-1.5">
+                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </div>
           </div>
@@ -227,21 +234,22 @@ export function ChatInterface({ paper, sessionId, onToggleTools, showTools }: Ch
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             onClick={() => scrollToBottom(true)}
-            className="absolute bottom-32 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-2 rounded-full shadow-glow flex items-center gap-2 text-[10px] font-black uppercase tracking-widest z-10"
+            className="absolute bottom-36 left-1/2 -translate-x-1/2 bg-primary text-white px-6 py-3 rounded-full shadow-[0_10px_30px_rgba(79,142,247,0.4)] flex items-center gap-3 text-[10px] font-black uppercase tracking-widest z-10 border border-white/20"
           >
-            New Messages <ChevronDown className="w-4 h-4" />
+            New Messages Below <ChevronDown className="w-4 h-4" />
           </motion.button>
         )}
       </AnimatePresence>
 
       {/* Input */}
-      <div className="p-6 shrink-0 bg-background/50 backdrop-blur-md">
+      <div className="p-8 shrink-0 bg-background/40 backdrop-blur-2xl border-t border-white/5">
         <div className="max-w-4xl mx-auto relative group">
+          <div className="absolute -inset-1 bg-linear-to-r from-primary/20 to-secondary/20 rounded-[22px] blur opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
           <textarea
             ref={textareaRef}
             rows={1}
             placeholder="Ask anything about this paper..."
-            className="w-full bg-surface-2 border border-border-accent rounded-2xl pl-6 pr-16 py-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none overflow-hidden max-h-40"
+            className="relative w-full bg-surface-2/80 border border-white/10 rounded-2xl pl-8 pr-16 py-5 text-sm focus:border-primary focus:ring-0 outline-none transition-all resize-none overflow-hidden max-h-48 backdrop-blur-xl shadow-2xl placeholder:text-muted/50"
             value={input}
             onChange={(e) => {
               setInput(e.target.value);
@@ -259,18 +267,19 @@ export function ChatInterface({ paper, sessionId, onToggleTools, showTools }: Ch
             onClick={() => handleSend()}
             disabled={!input.trim() || loading}
             className={cn(
-              "absolute right-3 bottom-3 w-10 h-10 rounded-xl flex items-center justify-center transition-all",
-              input.trim() ? "bg-primary text-white shadow-glow" : "bg-surface-3 text-muted cursor-not-allowed"
+              "absolute right-4 bottom-4 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300",
+              input.trim() ? "bg-primary text-white shadow-glow translate-y-0" : "bg-white/5 text-muted/30 cursor-not-allowed translate-y-0"
             )}
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-6 h-6" />}
           </button>
         </div>
-        <div className="flex items-center justify-center gap-2 mt-3">
-          <Sparkles className="w-3 h-3 text-primary animate-pulse" />
-          <span className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">Powered by Gemini AI</span>
+        <div className="flex items-center justify-center gap-3 mt-4">
+          <Sparkles className="w-3.5 h-3.5 text-primary animate-shimmer" />
+          <span className="text-[9px] font-black text-muted uppercase tracking-[0.3em] opacity-60">Verified AI Analysis Pipeline</span>
         </div>
       </div>
+    </div>
     </div>
   );
 }
