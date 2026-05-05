@@ -16,6 +16,8 @@ import {
 import { Button, Card, Avatar, Badge, Skeleton, PaperCardSkeleton, DashboardStatSkeleton } from '@/components/ui';
 import { StatsCard } from './StatsCard';
 import { PaperCard } from './PaperCard';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
@@ -23,7 +25,6 @@ const ActivityChart = dynamic(() => import('./ActivityChart').then(mod => mod.Ac
   ssr: false,
   loading: () => <div className="h-64 w-full bg-surface-2 animate-pulse rounded-[32px]" />
 });
-import Link from 'next/link';
 
 interface DashboardClientProps {
   user: any;
