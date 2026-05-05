@@ -80,7 +80,25 @@ class ProfileResponse(BaseModel):
     last_active: Optional[datetime] = None
     created_at: datetime
 
-# Stats Schemas
+class DashboardStatsResponse(BaseModel):
+    total_papers: int
+    total_questions: int
+    total_sessions: int
+    study_streak: int
+    recent_papers: List[Any]
+    recent_sessions: List[Any]
+    activity: List[Any]
+    top_subjects: List[Any]
+
+class UserStatsResponse(BaseModel):
+    papers_by_subject: List[Any]
+    monthly_uploads: List[Any]
+    daily_activity: List[Any]
+    total_saved_questions: int
+    days_active: int
+    member_since: datetime
+
+# Stats Schemas (Legacy)
 class StatsResponse(BaseModel):
     total_study_hours: float
     notes_created: int
