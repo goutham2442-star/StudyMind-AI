@@ -8,10 +8,15 @@ import {
   BarChart3,
   ChevronRight
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { ProfileTab } from '@/components/settings/ProfileTab';
 import { PreferencesTab } from '@/components/settings/PreferencesTab';
 import { AccountTab } from '@/components/settings/AccountTab';
-import { StatsTab } from '@/components/settings/StatsTab';
+
+const StatsTab = dynamic(() => import('@/components/settings/StatsTab').then(mod => mod.StatsTab), {
+  ssr: false,
+  loading: () => <div className="h-[400px] w-full bg-surface-2 animate-pulse rounded-2xl" />
+});
 import { supabase } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';

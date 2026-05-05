@@ -1,6 +1,12 @@
-import { supabase } from '@/lib/supabase/server';
+import { createServerClient } from '@/lib/supabase/server';
 import { LibraryClient } from '@/components/library/LibraryClient';
 import { redirect } from 'next/navigation';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Paper Library — StudyMind AI',
+  description: 'Explore our vast collection of university exam papers. Filter by subject, year, or department to find exactly what you need.',
+};
 
 export const dynamic = 'force-dynamic';
 
@@ -9,6 +15,7 @@ export default async function LibraryPage({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  const supabase = createServerClient();
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {

@@ -1,5 +1,14 @@
 'use client';
 
+import { Metadata } from 'next';
+
+// This will be used by the layout or wrapper if needed, 
+// but since it's a client component, we'll keep it here for reference 
+// or move to a separate layout/wrapper.
+// Actually, Next.js 13+ client components can't export metadata.
+// I'll create a layout.tsx for the upload route to handle metadata.
+
+
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 

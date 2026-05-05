@@ -1,6 +1,13 @@
 import { createServerClient } from '@/lib/supabase/server';
 import { DashboardClient } from '@/components/dashboard/DashboardClient';
 import { redirect } from 'next/navigation';
+import { Metadata } from 'next';
+import { unstable_cache } from 'next/cache';
+
+export const metadata: Metadata = {
+  title: 'Dashboard — StudyMind AI',
+  description: 'Manage your academic papers, track your study progress, and continue your AI-powered learning sessions.',
+};
 
 export const dynamic = 'force-dynamic';
 
@@ -12,13 +19,19 @@ export default async function DashboardPage() {
     redirect('/login');
   }
 
-  // Fetch dashboard stats from FastAPI
-  const statsRes = await fetch(`http://localhost:8000/api/stats/dashboard/${session.user.id}`, {
-    headers: { 'Authorization': `Bearer ${session.access_token}` },
-    cache: 'no-store'
-  });
-  
-  const dashboardData = await statsRes.json();
+  // Use cached fetching for dashboard data
+  const getDashboardData = unstable_cache(
+    async (userId: string, token: string) => {
+      const res = await fetch(`http://localhost:8000/api/stats/dashboard/${userId}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      return res.json();
+    },
+    [`dashboard-${session.user.id}`],
+    { revalidate: 60, tags: [`dashboard-${session.user.id}`] }
+  );
+
+  const dashboardData = await getDashboardData(session.user.id, session.access_token);
 
   const stats = {
     totalPapers: dashboardData.total_papers || 0,
