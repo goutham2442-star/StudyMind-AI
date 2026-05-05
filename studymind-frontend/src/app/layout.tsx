@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Sora, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
-import SupabaseProvider from "@/components/providers/supabase-provider";
+
 
 const sora = Sora({
   subsets: ["latin"],
@@ -61,19 +61,17 @@ export default function RootLayout({
       <body
         className={`${sora.variable} ${dmSans.variable} font-sans antialiased bg-background text-foreground`}
       >
-        <SupabaseProvider>
-          <Toaster 
-            position="top-right"
-            toastOptions={{
-              style: {
-                background: '#111118',
-                color: '#F1F5F9',
-                border: '1px solid #1E1E2E',
-              },
-            }}
-          />
-          {children}
-        </SupabaseProvider>
+        <Toaster 
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: '#111118',
+              color: '#F1F5F9',
+              border: '1px solid #1E1E2E',
+            },
+          }}
+        />
+        {children}
       </body>
     </html>
   );
