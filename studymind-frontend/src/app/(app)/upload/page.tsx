@@ -88,7 +88,7 @@ export default function UploadPage() {
 
       // In a real app, the backend would handle extraction and AI analysis
       // We'll call our FastAPI backend here
-      const response = await axios.post('http://localhost:8000/api/papers/upload', paperData, {
+      const response = await axios.post('/api/papers/upload', paperData, {
         headers: {
           'Content-Type': 'application/json'
         }

@@ -31,18 +31,15 @@ export default function ChatPage() {
         if (paperError) throw paperError;
         setPaper(paperData);
 
-        // 2. Fetch Sessions
-        const { data: sessionData, error: sessionError } = await supabase
-          .from('chat_sessions')
-          .select('*')
-          .eq('paper_id', paperId)
-          .order('updated_at', { ascending: false });
+        // 2. Fetch Sessions via Proxy
+        const sessionRes = await fetch(`/api/chat/sessions/${paperId}`);
+        const sessionData = await sessionRes.json();
 
-        if (sessionError) throw sessionError;
-        setSessions(sessionData);
-        
-        if (sessionData.length > 0) {
-          setCurrentSessionId(sessionData[0].id);
+        if (sessionRes.ok) {
+          setSessions(sessionData);
+          if (sessionData.length > 0) {
+            setCurrentSessionId(sessionData[0].id);
+          }
         }
       } catch (error) {
         console.error('Error loading chat:', error);
@@ -55,19 +52,16 @@ export default function ChatPage() {
   }, [paperId]);
 
   const handleNewSession = async () => {
-    // Create new session in DB
-    const { data: { user } } = await supabase.auth.getUser();
-    const { data: newSession, error } = await supabase
-      .from('chat_sessions')
-      .insert({
-        paper_id: paperId,
-        user_id: user?.id,
-        title: 'New Discussion'
-      })
-      .select()
-      .single();
+    // Create new session via Proxy
+    const response = await fetch('/api/chat/sessions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paper_id: paperId })
+    });
 
-    if (!error && newSession) {
+    const newSession = await response.json();
+
+    if (response.ok && newSession) {
       setSessions([newSession, ...sessions]);
       setCurrentSessionId(newSession.id);
     }

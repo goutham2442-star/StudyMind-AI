@@ -23,4 +23,4 @@ export const SUBJECTS = [
 
 export const YEARS = Array.from({ length: 2025 - 2018 + 1 }, (_, i) => 2018 + i).reverse();
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export const API_URL = "/api";

@@ -72,7 +72,7 @@ export function ChatInterface({ paper, onToggleTools, showTools }: ChatInterface
       
       const { data: { user } } = await supabase.auth.getUser();
       
-      const response = await fetch('http://localhost:8000/api/chat/message', {
+      const response = await fetch('/api/chat/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
