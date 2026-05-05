@@ -37,7 +37,7 @@ export function ProcessingState({ stage }: ProcessingStateProps) {
           className={cn("w-32 h-32 rounded-[40px] bg-surface-2 flex items-center justify-center shadow-2xl", currentStage.color)}
         >
           <currentStage.icon size={56} className="relative z-10" />
-          <div className={cn("absolute inset-0 blur-[40px] opacity-20 rounded-full", currentStage.color.replace('text', 'bg'))} />
+          <div className={cn("absolute inset-0 blur-2xl opacity-20 rounded-full", currentStage.color.replace('text', 'bg'))} />
         </motion.div>
         
         <div className="absolute -bottom-2 -right-2">

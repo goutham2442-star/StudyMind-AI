@@ -8,9 +8,10 @@ interface AvatarProps {
   name: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   online?: boolean;
+  className?: string;
 }
 
-export function Avatar({ src, name, size = 'md', online = false }: AvatarProps) {
+export function Avatar({ src, name, size = 'md', online = false, className }: AvatarProps) {
   const sizes = {
     sm: "w-8 h-8 text-xs",
     md: "w-10 h-10 text-sm",
@@ -26,7 +27,7 @@ export function Avatar({ src, name, size = 'md', online = false }: AvatarProps) 
     .slice(0, 2);
 
   return (
-    <div className="relative inline-block shrink-0">
+    <div className={cn("relative inline-block shrink-0", className)}>
       <div className={cn(
         "rounded-full overflow-hidden flex items-center justify-center border-2 border-border-accent",
         sizes[size],

@@ -37,7 +37,7 @@ export function PaperPanel({ paper, sessions, currentSessionId, onSessionSelect,
 
         <div className="space-y-4">
           <div 
-            className="w-full aspect-[4/3] rounded-2xl flex items-center justify-center relative overflow-hidden shadow-glow"
+            className="w-full aspect-4/3 rounded-2xl flex items-center justify-center relative overflow-hidden shadow-glow"
             style={{ backgroundColor: color + '20' }}
           >
             <FileText className="w-12 h-12" style={{ color }} />

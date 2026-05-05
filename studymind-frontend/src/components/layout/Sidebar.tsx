@@ -63,7 +63,7 @@ export function Sidebar() {
   return (
     <motion.aside
       animate={{ width: isCollapsed ? 64 : 260 }}
-      className="hidden lg:flex flex-col h-screen fixed left-0 top-0 bg-[#0D0D14] border-r border-[#1E1E2E] z-40 transition-all duration-300"
+      className="hidden lg:flex flex-col h-screen fixed left-0 top-0 bg-[#0D0D14] border-r border-border-accent z-40 transition-all duration-300"
     >
       {/* Logo Section */}
       <div className={cn("p-6 flex items-center gap-3", isCollapsed && "justify-center px-0")}>

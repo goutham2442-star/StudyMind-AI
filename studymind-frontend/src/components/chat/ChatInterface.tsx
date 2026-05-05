@@ -7,7 +7,7 @@ import {
   Brain, 
   Sparkles, 
   ArrowLeft, 
-  LayoutRight,
+  PanelRight,
   Loader2,
   ChevronDown
 } from 'lucide-react';
@@ -159,7 +159,7 @@ export function ChatInterface({ paper, onToggleTools, showTools }: ChatInterface
           onClick={onToggleTools}
           className="h-9 text-[10px] font-black uppercase"
         >
-          <LayoutRight className="w-4 h-4 mr-2" />
+          <PanelRight className="w-4 h-4 mr-2" />
           Study Tools
         </Button>
       </header>

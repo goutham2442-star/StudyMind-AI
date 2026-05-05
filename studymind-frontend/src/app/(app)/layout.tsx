@@ -72,7 +72,7 @@ export default function AppLayout({
       {/* App Shell */}
       <Sidebar />
       
-      <div className="lg:pl-[var(--sidebar-width)] transition-all duration-300">
+      <div className="lg:pl-(--sidebar-width) transition-all duration-300">
         <Topbar />
         <main className="p-4 md:p-8 pb-32 lg:pb-8 max-w-7xl mx-auto">
           {children}

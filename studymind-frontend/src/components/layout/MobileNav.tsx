@@ -24,7 +24,7 @@ export function MobileNav() {
   ];
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-20 bg-[#0D0D14]/80 backdrop-blur-xl border-t border-[#1E1E2E] z-50 px-4 pb-4">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-20 bg-[#0D0D14]/80 backdrop-blur-xl border-t border-border-accent z-50 px-4 pb-4">
       <div className="flex items-center justify-between h-full relative">
         {navItems.slice(0, 2).map((item) => (
           <MobileNavItem key={item.href} {...item} active={pathname === item.href} />

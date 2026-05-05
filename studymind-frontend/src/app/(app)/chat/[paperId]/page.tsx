@@ -98,7 +98,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="fixed inset-0 z-[100] bg-background flex overflow-hidden">
+    <div className="fixed inset-0 z-100 bg-background flex overflow-hidden">
       {/* Left Panel */}
       <div className="hidden lg:block shrink-0">
         <PaperPanel 
