@@ -103,7 +103,7 @@ export function Sidebar() {
       </div>
 
       {/* User Section */}
-      <div className="p-6 mt-auto bg-white/[0.02] border-t border-white/5">
+      <div className="p-6 mt-auto bg-white/2 border-t border-white/5">
         <div className={cn("flex items-center gap-4", isCollapsed && "justify-center")}>
           <div className="relative group">
             <div className="absolute -inset-1 bg-linear-to-r from-primary to-secondary rounded-full blur opacity-0 group-hover:opacity-40 transition-opacity" />
@@ -152,8 +152,8 @@ function NavItem({ label, href, icon: Icon, active, collapsed, isCta }: any) {
       className={cn(
         "relative flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 group",
         active 
-          ? "bg-white/[0.04] text-white shadow-[0_0_20px_rgba(79,142,247,0.1)] border border-white/5" 
-          : "text-muted hover:bg-white/[0.02] hover:text-foreground",
+          ? "bg-white/4 text-white shadow-[0_0_20px_rgba(79,142,247,0.1)] border border-white/5" 
+          : "text-muted hover:bg-white/2 hover:text-foreground",
         isCta && !active && "bg-linear-to-r from-primary/5 to-secondary/5 border border-primary/10",
         collapsed && "justify-center px-0"
       )}

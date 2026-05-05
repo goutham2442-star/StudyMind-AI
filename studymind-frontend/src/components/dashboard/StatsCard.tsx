@@ -56,7 +56,7 @@ export function StatsCard({ title, value, icon: Icon, change, color }: StatsCard
         </div>
         {change !== undefined && (
           <div className={cn(
-            "flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.1em] px-3 py-1.5 rounded-xl border",
+            "flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl border",
             change >= 0 
               ? "text-success bg-success/10 border-success/20" 
               : "text-error bg-error/10 border-error/20"

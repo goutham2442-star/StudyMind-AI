@@ -22,7 +22,7 @@ export function PaperCard({ id, title, subject, exam_year, page_count }: PaperCa
       whileHover={{ y: -8, scale: 1.02 }}
       className="min-w-[320px] max-w-[320px] snap-start h-full"
     >
-      <Card padding="none" className="overflow-hidden h-full border border-white/5 bg-linear-to-br from-white/[0.05] to-transparent relative group">
+      <Card padding="none" className="overflow-hidden h-full border border-white/5 bg-linear-to-br from-white/5 to-transparent relative group">
         <div className="absolute top-0 left-0 w-full h-1" style={{ backgroundColor: color }} />
         
         <div className="p-6 flex flex-col h-full">
