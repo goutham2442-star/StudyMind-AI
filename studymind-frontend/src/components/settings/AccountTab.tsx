@@ -10,7 +10,7 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react';
-import { Button, Input, Modal, Card } from '@/components/ui';
+import { Button, Input, Modal, Card, Badge } from '@/components/ui';
 import { supabase } from '@/lib/supabase/client';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';

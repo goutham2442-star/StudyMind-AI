@@ -12,6 +12,7 @@ import {
 import { Button, Card } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { toast } from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 export function PreferencesTab() {
   const [loading, setLoading] = useState(false);
@@ -88,17 +89,17 @@ export function PreferencesTab() {
         <div className="space-y-4">
           <PreferenceToggle 
             checked={prefs.autoGenQuestions} 
-            onChange={(v) => setPrefs({ ...prefs, autoGenQuestions: v })}
+            onChange={(v: boolean) => setPrefs({ ...prefs, autoGenQuestions: v })}
             label="Auto-generate exam questions on upload"
           />
           <PreferenceToggle 
             checked={prefs.autoGenSummary} 
-            onChange={(v) => setPrefs({ ...prefs, autoGenSummary: v })}
+            onChange={(v: boolean) => setPrefs({ ...prefs, autoGenSummary: v })}
             label="Auto-generate summary on upload"
           />
           <PreferenceToggle 
             checked={prefs.showSuggestions} 
-            onChange={(v) => setPrefs({ ...prefs, showSuggestions: v })}
+            onChange={(v: boolean) => setPrefs({ ...prefs, showSuggestions: v })}
             label="Show suggested questions in chat"
           />
         </div>
@@ -115,7 +116,7 @@ export function PreferencesTab() {
 
         <PreferenceToggle 
           checked={prefs.emailNotifications} 
-          onChange={(v) => setPrefs({ ...prefs, emailNotifications: v })}
+          onChange={(v: boolean) => setPrefs({ ...prefs, emailNotifications: v })}
           label="Email me when new papers are added to my department"
         />
       </section>

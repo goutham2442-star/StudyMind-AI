@@ -15,6 +15,7 @@ import {
 } from 'recharts';
 import { Card } from '@/components/ui';
 import { BookOpen, MessageSquare, Bookmark, Calendar } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export function StatsTab({ stats, profile }: any) {
   const activityData = [
