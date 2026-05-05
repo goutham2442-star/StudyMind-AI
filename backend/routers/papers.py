@@ -1,8 +1,10 @@
 import os
 import uuid
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query, status
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query, status, Request
 from utils.auth import get_current_user, get_optional_user
+from utils.security import sanitize_text, validate_pdf_content, validate_exam_year, check_ownership, validate_uuid
+from utils.rate_limiter import limiter
 from services.supabase_service import supabase
 from services.pdf_service import extract_text, get_page_count
 from services.gemini_service import analyze_paper
@@ -16,28 +18,38 @@ def sanitize_filename(filename: str) -> str:
     return re.sub(r'[^a-zA-Z0-9._-]', '_', filename)
 
 @router.post("/upload", response_model=PaperResponse)
+@limiter.limit("5/minute")
 async def upload_paper(
+    request: Request,
     file: UploadFile = File(...),
     title: str = Form(...),
     subject: str = Form(...),
     year: Optional[int] = Form(None),
     is_public: bool = Form(True),
     tags: Optional[str] = Form(None),
-    user_id_from_form: str = Form(None, alias="user_id"),
     current_user_id: str = Depends(get_current_user)
 ):
     """
     Upload a PDF paper, extract text, analyze with AI, and save to DB.
     """
     # 1. Validation
-    if file.content_type != "application/pdf" and not file.filename.endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
+    file_bytes = await file.read()
+    
+    # Verify magic bytes for PDF
+    validate_pdf_content(file_bytes)
     
     # Check file size (20MB)
     MAX_SIZE = 20 * 1024 * 1024
-    file_bytes = await file.read()
     if len(file_bytes) > MAX_SIZE:
         raise HTTPException(status_code=400, detail="File too large. Max size is 20MB.")
+    
+    # Validate exam year
+    if year:
+        validate_exam_year(year)
+
+    # Sanitize text inputs
+    title = sanitize_text(title)
+    subject = sanitize_text(subject)
 
     # Use the authenticated user ID
     user_id = current_user_id

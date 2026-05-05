@@ -5,6 +5,7 @@ import { Camera, User, School, Book, Calendar, Info } from 'lucide-react';
 import { Button, Input, Avatar } from '@/components/ui';
 import { supabase } from '@/lib/supabase/client';
 import { toast } from 'react-hot-toast';
+import { trimAndLimit } from '@/lib/sanitizer';
 
 export function ProfileTab({ user, profile, onUpdate }: any) {
   const [loading, setLoading] = useState(false);
@@ -68,11 +69,11 @@ export function ProfileTab({ user, profile, onUpdate }: any) {
       const { error } = await supabase
         .from('profiles')
         .update({
-          full_name: formData.fullName,
-          university: formData.university,
-          department: formData.department,
+          full_name: trimAndLimit(formData.fullName, 100),
+          university: trimAndLimit(formData.university, 100),
+          department: trimAndLimit(formData.department, 100),
           year_of_study: parseInt(formData.yearOfStudy),
-          bio: formData.bio,
+          bio: trimAndLimit(formData.bio, 160),
           avatar_url: formData.avatarUrl,
         })
         .eq('id', user.id);

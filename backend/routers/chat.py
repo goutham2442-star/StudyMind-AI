@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.responses import StreamingResponse
 from typing import List, Optional
 from utils.auth import get_current_user
+from utils.security import sanitize_text, validate_uuid, check_ownership
+from utils.rate_limiter import limiter
 from services.supabase_service import supabase
 from services.gemini_service import answer_question
 from models.schemas import (
@@ -44,13 +46,13 @@ async def create_session(
 @router.get("/sessions/{paper_id}", response_model=List[SessionResponse])
 async def get_sessions(
     paper_id: str, 
-    user_id: Optional[str] = None,
     current_user_id: str = Depends(get_current_user)
 ):
     """
     List all chat sessions for a specific paper and user.
     """
-    target_user = user_id or current_user_id
+    target_user = current_user_id
+    validate_uuid(paper_id, "Paper ID")
     
     try:
         response = supabase.table("chat_sessions") \
@@ -72,10 +74,13 @@ async def get_messages(
     Fetch message history for a specific session.
     """
     try:
+        validate_uuid(session_id, "Session ID")
         # Verify ownership
         session = supabase.table("chat_sessions").select("user_id").eq("id", session_id).single().execute()
-        if not session.data or session.data["user_id"] != user_id:
-            raise HTTPException(status_code=403, detail="Access denied")
+        if not session.data:
+            raise HTTPException(status_code=404, detail="Session not found")
+            
+        check_ownership(session.data["user_id"], user_id)
             
         response = supabase.table("messages") \
             .select("*") \
@@ -88,10 +93,16 @@ async def get_messages(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/message")
+@limiter.limit("30/minute")
 async def send_message(
+    req: Request,
     request: ChatMessageRequest,
     user_id: str = Depends(get_current_user)
 ):
+    # Sanitize input message
+    request.message = sanitize_text(request.message)
+    validate_uuid(request.paper_id, "Paper ID")
+    validate_uuid(request.session_id, "Session ID")
     """
     Handle chat messages with AI and return a streaming response.
     """

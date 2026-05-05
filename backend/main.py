@@ -5,16 +5,20 @@ from dotenv import load_dotenv
 import os
 import time
 from routers import auth, papers, chat, stats
-from supabase import create_client, Client
-import google.generativeai as genai
+from utils.rate_limiter import limiter
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 load_dotenv()
 
+# Rate limiter setup
 app = FastAPI(
     title="StudyMind AI API",
     description="Backend API for StudyMind AI - Academic Intelligence Platform",
     version="1.0.0"
 )
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # CORS configuration
 allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")

@@ -25,6 +25,7 @@ import { ProcessingState } from '@/components/upload/ProcessingState';
 import { SuccessState } from '@/components/upload/SuccessState';
 import { supabase } from '@/lib/supabase/client';
 import { toast } from 'react-hot-toast';
+import { validateFile, trimAndLimit } from '@/lib/sanitizer';
 import axios from 'axios';
 
 export default function UploadPage() {
@@ -43,13 +44,23 @@ export default function UploadPage() {
   });
 
   const handleFileSelect = (selectedFile: File | null) => {
-    setFile(selectedFile);
     if (selectedFile) {
-      // Clean up filename for initial title
-      const cleanTitle = selectedFile.name.replace('.pdf', '').replace(/[-_]/g, ' ');
-      setFormData(prev => ({ ...prev, title: cleanTitle }));
-      setStep(2);
+      try {
+        validateFile(selectedFile);
+        setFile(selectedFile);
+        // Clean up filename for initial title
+        const cleanTitle = selectedFile.name.replace('.pdf', '').replace(/[-_]/g, ' ');
+        setFormData(prev => ({ 
+          ...prev, 
+          title: trimAndLimit(cleanTitle, 200) 
+        }));
+        setStep(2);
+      } catch (error: any) {
+        toast.error(error.message);
+        setFile(null);
+      }
     } else {
+      setFile(null);
       setStep(1);
     }
   };
