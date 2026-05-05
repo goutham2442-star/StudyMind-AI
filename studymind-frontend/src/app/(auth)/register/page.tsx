@@ -188,7 +188,7 @@ export default function RegisterPage() {
               onChange={(e) => setFormData({ ...formData, agreedToTerms: e.target.checked })}
             />
           </div>
-          <span className="text-[10px] font-black uppercase tracking-[0.1em] text-muted leading-tight group-hover:text-foreground/80 transition-colors">
+          <span className="text-[10px] font-black uppercase tracking-widest text-muted leading-tight group-hover:text-foreground/80 transition-colors">
             I acknowledge the <Link href="/terms" className="text-primary hover:text-primary/80 transition-colors">Terms of Service</Link> and <Link href="/privacy" className="text-primary hover:text-primary/80 transition-colors">Privacy Protocol</Link>
           </span>
         </label>

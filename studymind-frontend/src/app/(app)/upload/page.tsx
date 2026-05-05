@@ -10,6 +10,7 @@ import { Metadata } from 'next';
 
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, 
@@ -29,6 +30,7 @@ import { validateFile, trimAndLimit } from '@/lib/sanitizer';
 import axios from 'axios';
 
 export default function UploadPage() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
