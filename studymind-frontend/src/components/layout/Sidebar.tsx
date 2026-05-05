@@ -13,7 +13,8 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
-  GraduationCap
+  GraduationCap,
+  Calendar as CalendarIcon
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -45,6 +46,7 @@ export function Sidebar() {
   const navItems = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'My Library', href: '/library', icon: BookOpen },
+    { label: 'Study Planner', href: '/planner', icon: CalendarIcon },
     { label: 'Upload Paper', href: '/upload', icon: Upload, isCta: true },
     { label: 'Chat History', href: '/chat', icon: MessageSquare },
     { label: 'Saved Questions', href: '/saved', icon: Bookmark },
