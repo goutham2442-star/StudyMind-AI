@@ -4,7 +4,7 @@ import { createAPIClient } from '@/lib/supabase/server';
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 async function proxyRequest(req: NextRequest, { params }: { params: { proxy: string[] } }) {
-  const supabase = createAPIClient();
+  const supabase = await createAPIClient();
   const { data: { session } } = await supabase.auth.getSession();
   
   const path = params.proxy.join('/');

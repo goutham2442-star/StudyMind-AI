@@ -4,7 +4,7 @@ import { createAPIClient } from '@/lib/supabase/server';
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 export async function POST(req: NextRequest) {
-  const supabase = createAPIClient();
+  const supabase = await createAPIClient();
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {

@@ -7,7 +7,7 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   const { data: paper } = await supabase
     .from('papers')
     .select('title, subject')
