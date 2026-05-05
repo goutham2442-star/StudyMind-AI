@@ -1,8 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 import os
-from routers import ai
+import time
+from routers import auth, papers, chat, stats
+from supabase import create_client, Client
+import google.generativeai as genai
 
 load_dotenv()
 
@@ -13,23 +17,71 @@ app = FastAPI(
 )
 
 # CORS configuration
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"], # Next.js default port
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(ai.router, prefix="/api/ai", tags=["AI Tutor"])
+# Startup event: test Supabase + Gemini connections
+@app.on_event("startup")
+async def startup_event():
+    print("🚀 Starting StudyMind AI API...")
+    
+    # Test Supabase
+    supabase_url = os.getenv("SUPABASE_URL")
+    supabase_key = os.getenv("SUPABASE_SERVICE_KEY")
+    if not supabase_url or not supabase_key:
+        print("⚠️ Warning: Supabase credentials missing")
+    else:
+        try:
+            create_client(supabase_url, supabase_key)
+            print("✅ Supabase connection successful")
+        except Exception as e:
+            print(f"❌ Supabase connection failed: {e}")
 
-@app.get("/")
-async def root():
+    # Test Gemini
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    if not gemini_key:
+        print("⚠️ Warning: Gemini API key missing")
+    else:
+        try:
+            genai.configure(api_key=gemini_key)
+            print("✅ Gemini API configured")
+        except Exception as e:
+            print(f"❌ Gemini configuration failed: {e}")
+
+# Include routers
+app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
+app.include_router(papers.router, prefix="/api/papers", tags=["Papers"])
+app.include_router(chat.router, prefix="/api/chat", tags=["AI Chat"])
+app.include_router(stats.router, prefix="/api/stats", tags=["Statistics"])
+
+# Global Error Handlers
+@app.exception_handler(404)
+async def not_found_exception_handler(request: Request, exc):
+    return JSONResponse(
+        status_code=status.HTTP_404_NOT_FOUND,
+        content={"message": "Resource not found", "path": request.url.path}
+    )
+
+@app.exception_handler(500)
+async def internal_server_error_handler(request: Request, exc):
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"message": "Internal server error", "detail": str(exc)}
+    )
+
+@app.get("/health")
+async def health_check():
     return {
         "status": "online",
-        "service": "StudyMind AI API",
-        "version": "1.0.0"
+        "timestamp": time.time(),
+        "version": "1.0.0",
+        "service": "StudyMind AI API"
     }
 
 if __name__ == "__main__":
