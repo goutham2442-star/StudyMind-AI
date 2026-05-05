@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Any, Dict
-from backend.utils.auth import get_current_user
-from backend.services.supabase_service import supabase
-from backend.models.schemas import DashboardStatsResponse, UserStatsResponse
+from utils.auth import get_current_user
+from services.supabase_service import supabase
+from models.schemas import DashboardStatsResponse, UserStatsResponse
 from datetime import datetime, timedelta
 import asyncio
 

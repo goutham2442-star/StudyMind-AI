@@ -55,10 +55,10 @@ async def startup_event():
             print(f"❌ Gemini configuration failed: {e}")
 
 # Include routers
-app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
-app.include_router(papers.router, prefix="/api/papers", tags=["Papers"])
-app.include_router(chat.router, prefix="/api/chat", tags=["AI Chat"])
-app.include_router(stats.router, prefix="/api/stats", tags=["Statistics"])
+app.include_router(auth.router)
+app.include_router(papers.router)
+app.include_router(chat.router)
+app.include_router(stats.router)
 
 # Global Error Handlers
 @app.exception_handler(404)

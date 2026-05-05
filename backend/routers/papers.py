@@ -2,11 +2,11 @@ import os
 import uuid
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query, status
-from backend.utils.auth import get_current_user, get_optional_user
-from backend.services.supabase_service import supabase
-from backend.services.pdf_service import extract_text, get_page_count
-from backend.services.gemini_service import analyze_paper
-from backend.models.schemas import PaperResponse, PaperListResponse
+from utils.auth import get_current_user, get_optional_user
+from services.supabase_service import supabase
+from services.pdf_service import extract_text, get_page_count
+from services.gemini_service import analyze_paper
+from models.schemas import PaperResponse, PaperListResponse
 import re
 
 router = APIRouter(prefix="/api/papers", tags=["Papers"])

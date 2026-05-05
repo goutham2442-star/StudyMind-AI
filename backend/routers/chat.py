@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 from typing import List, Optional
-from backend.utils.auth import get_current_user
-from backend.services.supabase_service import supabase
-from backend.services.gemini_service import answer_question
-from backend.models.schemas import (
+from utils.auth import get_current_user
+from services.supabase_service import supabase
+from services.gemini_service import answer_question
+from models.schemas import (
     SessionCreateRequest, 
     SessionResponse, 
     ChatMessageRequest, 

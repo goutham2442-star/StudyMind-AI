@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
 from typing import Optional
-from backend.utils.auth import get_current_user
-from backend.services.supabase_service import supabase
-from backend.models.schemas import ProfileUpdateRequest, ProfileResponse
+from utils.auth import get_current_user
+from services.supabase_service import supabase
+from models.schemas import ProfileUpdateRequest, ProfileResponse
 import uuid
 
 router = APIRouter(prefix="/api/auth", tags=["Auth & Profile"])
