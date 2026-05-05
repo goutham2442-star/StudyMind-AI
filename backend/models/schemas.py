@@ -32,6 +32,7 @@ class PaperListResponse(BaseModel):
 # Chat Schemas
 class ChatMessageRequest(BaseModel):
     session_id: str
+    paper_id: str
     content: str
 
 class ChatMessageResponse(BaseModel):
@@ -43,6 +44,11 @@ class ChatMessageResponse(BaseModel):
 class SessionCreateRequest(BaseModel):
     paper_id: str
     title: Optional[str] = None
+
+class SavedQuestionRequest(BaseModel):
+    paper_id: str
+    question: str
+    answer: str
 
 class SessionResponse(BaseModel):
     id: str
