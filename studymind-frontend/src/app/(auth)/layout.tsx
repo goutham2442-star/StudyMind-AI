@@ -18,59 +18,79 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen w-full flex bg-background overflow-hidden">
-      {/* Left Panel - Hidden on Mobile */}
-      <div className="hidden lg:flex w-[45%] relative flex-col justify-between p-16 overflow-hidden border-r border-border-accent bg-linear-to-b from-[#0A0A0F] to-[#0F0F1A]">
-        {/* Floating Background Icons */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <FloatingIcon icon={BookOpen} delay={0} top="20%" left="15%" />
-          <FloatingIcon icon={Brain} delay={1} top="50%" left="25%" />
-          <FloatingIcon icon={GraduationCap} delay={2} top="80%" left="10%" />
-          <FloatingIcon icon={Lightbulb} delay={0.5} top="30%" left="75%" />
-          <FloatingIcon icon={Star} delay={1.5} top="65%" left="80%" />
+    <div className="min-h-screen w-full flex bg-[#050508] overflow-hidden selection:bg-primary/30">
+      {/* Left Panel - High-End Branding */}
+      <div className="hidden lg:flex w-[42%] relative flex-col justify-between p-20 overflow-hidden border-r border-white/5 bg-[#050508]">
+        {/* Animated Mesh Gradient Background */}
+        <div className="absolute inset-0 opacity-40">
+          <div className="absolute top-[-20%] left-[-20%] w-[600px] h-[600px] bg-primary/20 blur-[120px] rounded-full animate-pulse" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-secondary/10 blur-[120px] rounded-full" />
         </div>
 
-        {/* Top Logo */}
-        <Link href="/" className="flex items-center gap-2 z-10">
-          <div className="w-10 h-10 bg-linear-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-glow">
+        {/* Floating Geometric Elements */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <FloatingIcon icon={BookOpen} delay={0} top="15%" left="10%" />
+          <FloatingIcon icon={Brain} delay={1} top="45%" left="20%" />
+          <FloatingIcon icon={GraduationCap} delay={2} top="75%" left="15%" />
+          <FloatingIcon icon={Lightbulb} delay={0.5} top="25%" left="70%" />
+          <FloatingIcon icon={Star} delay={1.5} top="60%" left="75%" />
+        </div>
+
+        {/* Top Branding */}
+        <Link href="/" className="flex items-center gap-4 z-10 group">
+          <div className="w-12 h-12 bg-linear-to-br from-primary to-secondary rounded-[14px] flex items-center justify-center shadow-glow transition-transform group-hover:scale-110 duration-500">
             <GraduationCap className="text-white w-6 h-6" />
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-xl font-heading font-extrabold tracking-tight">StudyMind</span>
-            <span className="text-xl font-heading font-extrabold text-primary">AI</span>
+          <div className="flex flex-col">
+            <span className="text-2xl font-heading font-black tracking-tighter text-glow">StudyMind</span>
+            <span className="text-[9px] font-black text-primary uppercase tracking-[0.3em] opacity-80">Academic Intelligence</span>
           </div>
         </Link>
 
-        {/* Center Content */}
-        <div className="relative z-10 max-w-sm">
+        {/* Hero Quote */}
+        <div className="relative z-10 max-w-sm mt-12">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="w-12 h-1 bg-primary rounded-full mb-8 shadow-glow"
+          />
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl font-heading font-bold italic leading-tight mb-4 text-foreground/90"
+            className="text-4xl font-heading font-black leading-tight mb-6 text-foreground tracking-tight text-glow"
           >
-            "The more that you read, the more things you will know."
+            Elevate your academic <span className="text-gradient">performance</span> with AI.
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-muted text-sm font-bold uppercase tracking-widest"
+            className="text-muted text-sm font-bold uppercase tracking-[0.2em] opacity-50"
           >
-            — Dr. Seuss
+            Join thousands of students mastering complex subjects.
           </motion.p>
         </div>
 
-        {/* Bottom Features */}
-        <div className="space-y-4 z-10">
-          <FeaturePoint text="AI-powered summaries in seconds" />
-          <FeaturePoint text="Predicted exam questions" />
-          <FeaturePoint text="Universal past paper library" />
+        {/* Premium Features List */}
+        <div className="space-y-6 z-10">
+          <FeaturePoint text="Intelligent Document Synthesis" />
+          <FeaturePoint text="Predictive Examination Analytics" />
+          <FeaturePoint text="Unified University Paper Repository" />
+        </div>
+
+        {/* Footer Credit */}
+        <div className="z-10 text-[10px] font-black text-muted uppercase tracking-[0.2em] opacity-30">
+          © {new Date().getFullYear()} StudyMind AI Systems
         </div>
       </div>
 
       {/* Right Panel - Form Area */}
-      <div className="w-full lg:w-[55%] flex flex-col items-center justify-center p-6 md:p-12 relative">
-        <div className="w-full max-w-md">
+      <div className="w-full lg:w-[58%] flex flex-col items-center justify-center p-8 md:p-16 relative bg-[#08080C]">
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(79,142,247,0.1),transparent_50%)]" />
+        </div>
+        
+        <div className="w-full max-w-md relative z-10">
           {children}
         </div>
       </div>
@@ -83,12 +103,12 @@ function FloatingIcon({ icon: Icon, delay, top, left }: any) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ 
-        opacity: 0.15,
-        y: [0, -20, 0],
-        rotate: [0, 10, -10, 0]
+        opacity: [0, 0.1, 0.05, 0.1],
+        y: [0, -30, 0],
+        rotate: [0, 15, -15, 0]
       }}
       transition={{
-        duration: 8,
+        duration: 10,
         repeat: Infinity,
         delay,
         ease: "easeInOut"
@@ -96,18 +116,18 @@ function FloatingIcon({ icon: Icon, delay, top, left }: any) {
       style={{ position: 'absolute', top, left }}
       className="text-primary"
     >
-      <Icon className="w-16 h-16" />
+      <Icon className="w-20 h-20 blur-[2px]" />
     </motion.div>
   );
 }
 
 function FeaturePoint({ text }: { text: string }) {
   return (
-    <div className="flex items-center gap-3">
-      <div className="w-5 h-5 rounded-full bg-success/20 flex items-center justify-center">
-        <CheckCircle2 className="w-3.5 h-3.5 text-success" />
+    <div className="flex items-center gap-4 group">
+      <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:bg-primary/20 transition-colors">
+        <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
       </div>
-      <span className="text-sm font-medium text-foreground/80">{text}</span>
+      <span className="text-xs font-black uppercase tracking-widest text-foreground/70 group-hover:text-foreground transition-colors">{text}</span>
     </div>
   );
 }
