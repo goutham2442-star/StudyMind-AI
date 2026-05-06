@@ -24,51 +24,69 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
   children,
   ...props
 }, ref) => {
-  // Filter out props that might conflict with motion.button
   const { onDrag, onDragStart, onDragEnd, onDragOver, ...filteredProps } = props as any;
+  
   const variants = {
-    primary: "bg-linear-to-r from-primary to-secondary text-white shadow-glow hover:opacity-95 border border-white/10",
-    secondary: "bg-surface-2/50 backdrop-blur-md border border-white/5 text-foreground hover:bg-surface-2 hover:border-white/10",
+    primary: "bg-linear-to-r from-primary to-primary-dark text-white shadow-glow border border-white/10 hover:shadow-glow-lg",
+    secondary: "bg-surface-3/50 backdrop-blur-xl border border-white/5 text-foreground hover:bg-surface-3 hover:border-white/10 shadow-premium",
     ghost: "bg-transparent text-muted hover:text-foreground hover:bg-white/5",
-    danger: "bg-error/10 text-error border border-error/20 hover:bg-error/20",
+    danger: "bg-error/10 text-error border border-error/20 hover:bg-error/20 shadow-glow shadow-error/10",
   };
 
   const sizes = {
-    sm: "px-4 py-2 text-xs",
-    md: "px-6 py-3 text-sm",
-    lg: "px-10 py-4 text-base",
+    sm: "px-4 h-9 text-[10px] uppercase tracking-widest",
+    md: "px-6 h-12 text-xs uppercase tracking-widest",
+    lg: "px-10 h-14 text-sm uppercase tracking-widest",
   };
 
   return (
     <motion.button
       ref={ref}
-      whileHover={!disabled && !loading ? { scale: 1.02, y: -1 } : {}}
-      whileTap={!disabled && !loading ? { scale: 0.98, y: 0 } : {}}
+      whileHover={!disabled && !loading ? { scale: 1.03, y: -2, transition: { type: "spring", stiffness: 400, damping: 10 } } : {}}
+      whileTap={!disabled && !loading ? { scale: 0.97, y: 0 } : {}}
       disabled={disabled || loading}
       className={cn(
-        "relative inline-flex items-center justify-center gap-2 font-bold rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden",
+        "relative inline-flex items-center justify-center gap-3 font-black rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group",
         variants[variant],
         sizes[size],
         className
       )}
       {...filteredProps}
     >
-      {/* Shimmer Effect for Primary */}
+      {/* Primary Glow Effect */}
+      {variant === 'primary' && (
+        <div className="absolute inset-0 bg-linear-to-r from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl" />
+      )}
+
+      {/* Shimmer Effect */}
       {variant === 'primary' && !disabled && !loading && (
-        <div className="absolute inset-0 w-full h-full animate-shimmer pointer-events-none opacity-20" />
+        <div className="absolute inset-0 w-full h-full animate-shimmer pointer-events-none opacity-30" />
       )}
 
       {loading ? (
-        <div className="flex items-center gap-2">
-          <Loader2 className="w-4 h-4 animate-spin" />
-          <span className="font-medium">Please wait...</span>
+        <div className="flex items-center gap-3">
+          <Loader2 className="w-4 h-4 animate-spin text-inherit" />
+          <span className="font-black">Processing</span>
         </div>
       ) : (
         <>
-          {Icon && iconPosition === 'left' && <Icon className="w-4 h-4 transition-transform group-hover:scale-110" />}
+          {Icon && iconPosition === 'left' && (
+            <div className="w-5 h-5 rounded-lg bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Icon className="w-3.5 h-3.5" />
+            </div>
+          )}
           <span className="relative z-10">{children}</span>
-          {Icon && iconPosition === 'right' && <Icon className="w-4 h-4 transition-transform group-hover:translate-x-1" />}
+          {Icon && iconPosition === 'right' && (
+            <div className="w-5 h-5 rounded-lg bg-white/10 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+              <Icon className="w-3.5 h-3.5" />
+            </div>
+          )}
         </>
+      )}
+
+      {/* Gradient Border for Secondary */}
+      {variant === 'secondary' && (
+        <div className="absolute inset-0 border border-white/10 rounded-xl pointer-events-none" />
       )}
     </motion.button>
   );

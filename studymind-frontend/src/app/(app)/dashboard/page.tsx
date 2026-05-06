@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation';
 import { Metadata } from 'next';
 import { unstable_cache } from 'next/cache';
 
+import { formatTimeAgo } from '@/lib/utils';
+
 export const metadata: Metadata = {
   title: 'Dashboard — StudyMind AI',
   description: 'Manage your academic papers, track your study progress, and continue your AI-powered learning sessions.',
@@ -64,7 +66,7 @@ export default async function DashboardPage() {
       recentPapers={papers}
       chatSessions={chatSessions.map((s: any) => ({
         ...s,
-        timeAgo: 'Just now'
+        timeAgo: formatTimeAgo(s.updated_at)
       }))}
       activityData={activityData}
     />

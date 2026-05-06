@@ -23,68 +23,79 @@ export function StatsCard({ title, value, icon: Icon, change, color }: StatsCard
     if (start === end) return;
     
     const duration = 1500;
-    const stepTime = Math.abs(Math.floor(duration / end));
+    const stepTime = 20;
+    const totalSteps = duration / stepTime;
+    const increment = Math.ceil(end / totalSteps);
     
     const timer = setInterval(() => {
-      start += Math.ceil(end / 60);
+      start += increment;
       if (start >= end) {
         setDisplayValue(end);
         clearInterval(timer);
       } else {
         setDisplayValue(start);
       }
-    }, 20);
+    }, stepTime);
     
     return () => clearInterval(timer);
   }, [numericValue]);
 
   const colors = {
-    blue: "text-blue-500 bg-blue-500/10 shadow-blue-500/20",
-    violet: "text-violet-500 bg-violet-500/10 shadow-violet-500/20",
-    teal: "text-teal-500 bg-teal-500/10 shadow-teal-500/20",
-    orange: "text-orange-500 bg-orange-500/10 shadow-orange-500/20",
+    blue: "text-primary bg-primary/10 shadow-primary/20 border-primary/10",
+    violet: "text-secondary bg-secondary/10 shadow-secondary/20 border-secondary/10",
+    teal: "text-accent bg-accent/10 shadow-accent/20 border-accent/10",
+    orange: "text-orange-500 bg-orange-500/10 shadow-orange-500/20 border-orange-500/10",
   };
 
   return (
     <motion.div
-      whileHover={{ y: -6, scale: 1.02 }}
-      className="glass-card p-8 rounded-3xl flex flex-col gap-6 relative overflow-hidden group border border-white/5"
+      whileHover={{ y: -8, transition: { type: "spring", stiffness: 400, damping: 15 } }}
+      className="glass-card p-7 rounded-[32px] flex flex-col gap-8 relative overflow-hidden group border border-white/5"
     >
       <div className="flex items-center justify-between relative z-10">
-        <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:shadow-[0_0_20px_rgba(79,142,247,0.2)]", colors[color])}>
+        <div className={cn(
+          "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 border group-hover:scale-110", 
+          colors[color]
+        )}>
           <Icon className="w-7 h-7" />
         </div>
         {change !== undefined && (
-          <div className={cn(
-            "flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl border",
-            change >= 0 
-              ? "text-success bg-success/10 border-success/20" 
-              : "text-error bg-error/10 border-error/20"
-          )}>
-            {change >= 0 ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
+          <Badge 
+            variant={change >= 0 ? "success" : "error"}
+            className="h-7 px-3 text-[10px] font-black uppercase tracking-widest rounded-lg border-none bg-white/5"
+          >
+            {change >= 0 ? <TrendingUp className="w-3 h-3 mr-1.5" /> : <TrendingDown className="w-3 h-3 mr-1.5" />}
             {Math.abs(change)}%
-          </div>
+          </Badge>
         )}
       </div>
 
       <div className="relative z-10">
-        <p className="text-muted text-[10px] font-black uppercase tracking-[0.2em] opacity-60">{title}</p>
-        <h3 className="text-4xl font-heading font-black mt-2 tracking-tight">
-          {typeof value === 'string' && value.includes('+') ? `${displayValue}+` : displayValue}
-        </h3>
+        <p className="text-muted-dark text-[10px] font-black uppercase tracking-[0.25em] mb-1">{title}</p>
+        <div className="flex items-baseline gap-1">
+          <h3 className="text-4xl font-heading font-black tracking-tight text-glow">
+            {displayValue.toLocaleString()}
+          </h3>
+          {typeof value === 'string' && value.includes('+') && (
+            <span className="text-primary font-black text-xl">+</span>
+          )}
+        </div>
       </div>
 
-      {/* Background Accent */}
+      {/* Decorative Elements */}
       <div className={cn(
-        "absolute -bottom-16 -right-16 w-48 h-48 blur-[80px] opacity-10 rounded-full transition-all duration-700 group-hover:opacity-20 group-hover:scale-110",
-        color === 'blue' && "bg-blue-500",
-        color === 'violet' && "bg-violet-500",
-        color === 'teal' && "bg-teal-500",
+        "absolute -bottom-10 -right-10 w-40 h-40 blur-[70px] opacity-10 rounded-full transition-all duration-700 group-hover:opacity-25 group-hover:scale-150",
+        color === 'blue' && "bg-primary",
+        color === 'violet' && "bg-secondary",
+        color === 'teal' && "bg-accent",
         color === 'orange' && "bg-orange-500"
       )} />
       
-      {/* Subtle border shine */}
-      <div className="absolute inset-0 bg-linear-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+      {/* Glossy Overlay */}
+      <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none duration-500" />
+      
+      {/* Subtle Grid Pattern */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] bg-size-[20px_20px]" />
     </motion.div>
   );
 }

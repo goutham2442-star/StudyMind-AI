@@ -18,13 +18,13 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen w-full flex bg-[#050508] overflow-hidden selection:bg-primary/30">
+    <div className="flex min-h-screen w-full overflow-hidden bg-background selection:bg-primary/30">
       {/* Left Panel - High-End Branding */}
-      <div className="hidden lg:flex w-[42%] relative flex-col justify-between p-20 overflow-hidden border-r border-white/5 bg-[#050508]">
-        {/* Animated Mesh Gradient Background */}
-        <div className="absolute inset-0 opacity-40">
-          <div className="absolute top-[-20%] left-[-20%] w-[600px] h-[600px] bg-primary/20 blur-[120px] rounded-full animate-pulse" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-secondary/10 blur-[120px] rounded-full" />
+      <div className="relative hidden w-[42%] flex-col justify-between overflow-hidden bg-background p-20 lg:flex">
+        {/* Animated Background Mesh */}
+        <div className="absolute inset-0 bg-background opacity-40">
+          <div className="absolute top-[-20%] left-[-20%] h-[600px] w-[600px] animate-pulse rounded-full bg-primary/20 blur-[120px]" />
+          <div className="absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-secondary/10 blur-[120px]" />
         </div>
 
         {/* Floating Geometric Elements */}
@@ -85,7 +85,7 @@ export default function AuthLayout({
       </div>
 
       {/* Right Panel - Form Area */}
-      <div className="w-full lg:w-[58%] flex flex-col items-center justify-center p-8 md:p-16 relative bg-[#08080C]">
+      <div className="w-full lg:w-[58%] flex flex-col items-center justify-center p-8 md:p-16 relative bg-background">
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(79,142,247,0.1),transparent_50%)]" />
         </div>

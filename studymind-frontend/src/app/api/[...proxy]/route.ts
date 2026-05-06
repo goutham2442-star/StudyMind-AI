@@ -28,30 +28,38 @@ async function proxyRequest(req: NextRequest, { params }: { params: Promise<{ pr
       cache: 'no-store'
     });
 
-    // Try to parse as JSON, but handle non-JSON error pages
+    // Check if it's a streaming response
     const contentType = response.headers.get('content-type');
+    const isStream = contentType?.includes('text/event-stream');
+
+    if (isStream && response.body) {
+      // Pass-through the stream
+      return new NextResponse(response.body, {
+        status: response.status,
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+          'X-Accel-Buffering': 'no',
+        },
+      });
+    }
+
     if (contentType && contentType.includes('application/json')) {
       const data = await response.json();
       return NextResponse.json(data, { status: response.status });
     } else {
       const text = await response.text();
-      console.error('Non-JSON Proxy Response:', text);
-      return NextResponse.json({ 
-        error: 'Backend returned non-JSON response', 
+      return new NextResponse(text, { 
         status: response.status,
-        details: text.slice(0, 200) 
-      }, { status: 500 });
+        headers: { 'Content-Type': contentType || 'text/plain' }
+      });
     }
   } catch (error: any) {
-    console.error('Proxy Connection Error:', {
-      url,
-      method: req.method,
-      error: error.message
-    });
+    console.error('Proxy Connection Error:', { url, error: error.message });
     return NextResponse.json({ 
       error: 'Backend connection failed', 
-      details: error.message,
-      hint: 'Ensure the backend is running at ' + BACKEND_URL 
+      details: error.message 
     }, { status: 500 });
   }
 }

@@ -48,29 +48,38 @@ export function ActivityChart({ data, mostActiveSubject }: ActivityChartProps) {
               tick={{ fontSize: 10, fill: '#64748b' }}
             />
             <Tooltip 
-              cursor={{ fill: 'rgba(79, 142, 247, 0.05)' }}
+              cursor={{ fill: 'rgba(79, 142, 247, 0.05)', radius: 8 }}
               contentStyle={{ 
-                backgroundColor: '#111118', 
-                border: '1px solid #1E1E2E',
-                borderRadius: '12px',
-                fontSize: '12px',
-                fontWeight: 'bold'
+                backgroundColor: 'rgba(17, 17, 24, 0.8)', 
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '16px',
+                fontSize: '11px',
+                fontWeight: '900',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em'
               }}
               itemStyle={{ color: '#4F8EF7' }}
             />
             <Bar 
               dataKey="count" 
-              radius={[4, 4, 0, 0]}
-              barSize={20}
+              radius={[6, 6, 0, 0]}
+              barSize={24}
             >
               {data.map((entry, index) => (
                 <Cell 
                   key={`cell-${index}`} 
-                  fill={entry.count > 0 ? '#4F8EF7' : '#1E1E2E'} 
-                  fillOpacity={entry.count > 0 ? 0.8 : 0.3}
+                  fill="url(#barGradient)"
+                  style={{ filter: entry.count > 0 ? 'drop-shadow(0 0 8px rgba(79, 142, 247, 0.3))' : 'none' }}
                 />
               ))}
             </Bar>
+            <defs>
+              <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#4F8EF7" stopOpacity={0.8} />
+                <stop offset="100%" stopColor="#2D5BFF" stopOpacity={0.4} />
+              </linearGradient>
+            </defs>
           </BarChart>
         </ResponsiveContainer>
       </div>

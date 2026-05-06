@@ -1,13 +1,16 @@
 'use client';
 
 import { Search, Bell, Menu, User, Settings, LogOut } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Avatar } from '@/components/ui';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
+import { toast } from 'react-hot-toast';
 
 export function Topbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -15,6 +18,12 @@ export function Topbar() {
       setUser(data.user);
     });
   }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success('Signed out successfully');
+    router.push('/login');
+  };
 
   const getPageTitle = () => {
     const path = pathname.split('/').pop() || 'Dashboard';
@@ -38,6 +47,14 @@ export function Topbar() {
       {/* Right: Actions */}
       <div className="flex items-center gap-4">
         <button 
+          onClick={handleLogout}
+          className="p-2.5 text-muted hover:text-error hover:bg-error/5 border border-transparent hover:border-error/20 rounded-xl transition-all group lg:hidden"
+          title="Sign Out"
+        >
+          <LogOut className="w-5 h-5" />
+        </button>
+
+        <button 
           onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
           className="h-10 px-4 text-muted hover:text-primary hover:bg-white/5 border border-white/5 hover:border-primary/20 rounded-xl transition-all flex items-center gap-4 group"
         >
@@ -54,12 +71,12 @@ export function Topbar() {
 
         <button className="p-2.5 text-muted hover:text-primary hover:bg-white/5 border border-transparent hover:border-white/10 rounded-xl transition-all relative group">
           <Bell className="w-5 h-5 transition-transform group-hover:rotate-12" />
-          <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-error rounded-full border-2 border-[#050508] shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+          <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-error rounded-full border-2 border-background shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
         </button>
 
         <div className="w-px h-8 bg-white/5 mx-2" />
 
-        <div className="flex items-center gap-4 pl-2 group cursor-pointer">
+        <Link href="/settings" className="flex items-center gap-4 pl-2 group cursor-pointer">
           <div className="text-right hidden sm:block">
             <p className="text-xs font-black tracking-tight group-hover:text-primary transition-colors">
               {user?.user_metadata?.full_name || 'Student'}
@@ -76,7 +93,7 @@ export function Topbar() {
               className="relative border border-white/10"
             />
           </div>
-        </div>
+        </Link>
       </div>
     </header>
   );

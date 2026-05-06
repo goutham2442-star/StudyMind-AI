@@ -42,7 +42,7 @@ export function Tooltip({ children, content, placement = 'top' }: TooltipProps) 
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.15 }}
             className={cn(
-              "absolute z-[110] px-3 py-1.5 bg-surface border border-border-accent rounded-lg text-xs font-medium text-foreground whitespace-nowrap shadow-xl pointer-events-none",
+              "absolute z-110 px-3 py-1.5 bg-surface border border-border-accent rounded-lg text-xs font-medium text-foreground whitespace-nowrap shadow-xl pointer-events-none",
               placements[placement]
             )}
           >

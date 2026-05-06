@@ -54,15 +54,33 @@ export default function LoginPage() {
     }
   };
 
+  const handleDemoLogin = () => {
+    setFormData({
+      email: 'student@studymind.ai',
+      password: 'password123',
+    });
+    toast.success('Demo credentials loaded!');
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       className="space-y-10"
     >
-      <div className="space-y-3">
-        <h1 className="text-4xl font-heading font-black tracking-tighter text-glow">Welcome back</h1>
-        <p className="text-muted text-sm font-black uppercase tracking-widest opacity-50">Sign in to your academic portal</p>
+      <div className="flex items-center justify-between">
+        <div className="space-y-3">
+          <h1 className="text-4xl font-heading font-black tracking-tighter text-glow">Welcome back</h1>
+          <p className="text-muted text-sm font-black uppercase tracking-widest opacity-50">Sign in to your academic portal</p>
+        </div>
+        <Button 
+          variant="secondary" 
+          size="sm" 
+          onClick={handleDemoLogin}
+          className="h-10 px-4 rounded-xl text-[8px] font-black uppercase tracking-[0.2em] bg-primary/5 text-primary border-primary/10 hover:bg-primary hover:text-white"
+        >
+          Quick Demo Access
+        </Button>
       </div>
 
       <form onSubmit={handleLogin} className="space-y-6">
@@ -74,7 +92,7 @@ export default function LoginPage() {
           required
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="bg-white/5 border-white/10 focus:border-primary transition-all rounded-2xl"
+          className="bg-white/5 border-white/10 focus:border-primary transition-all rounded-2xl h-12"
         />
 
         <div className="relative group">
@@ -86,7 +104,7 @@ export default function LoginPage() {
             required
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            className="bg-white/5 border-white/10 focus:border-primary transition-all rounded-2xl"
+            className="bg-white/5 border-white/10 focus:border-primary transition-all rounded-2xl h-12"
             suffix={
               <button
                 type="button"
@@ -109,7 +127,7 @@ export default function LoginPage() {
 
         <Button 
           type="submit" 
-          className="w-full h-14 text-sm font-black uppercase tracking-widest group rounded-2xl shadow-[0_15px_30px_rgba(79,142,247,0.2)]" 
+          className="w-full h-14 text-sm font-black uppercase tracking-widest group rounded-2xl shadow-glow-lg" 
           loading={loading}
         >
           Authorize Session <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />

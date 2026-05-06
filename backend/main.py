@@ -23,37 +23,46 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# CORS configuration
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+# CORS configuration with multi-origin support
+allowed_origins_raw = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
+allowed_origins = [origin.strip() for origin in allowed_origins_raw.split(",")]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
 # Startup event: test Supabase + Gemini connections
 @app.on_event("startup")
 async def startup_event():
-    print("\n" + "="*50)
-    print("🚀 StudyMind AI API is starting...")
-    print("="*50)
+    print("\n" + ">> " + "="*48)
+    print("  StudyMind AI API | Professional Academic Intelligence")
+    print("  " + "="*48)
     
     from services.supabase_service import supabase, SUPABASE_URL
-    from services.gemini_service import model, GEMINI_API_KEY
+    from services.gemini_service import model
+    
+    status_msg = []
     
     if supabase:
-        print(f"✅ Supabase: Connected to {SUPABASE_URL}")
+        print(f"  [+] Supabase: Connected ({SUPABASE_URL})")
+        status_msg.append("supabase_ok")
     else:
-        print("❌ Supabase: MISSING CONFIGURATION (Check .env)")
+        print("  [!] Supabase: CRITICAL CONFIGURATION MISSING")
+        status_msg.append("supabase_fail")
         
     if model:
-        print("✅ Gemini: AI Model Initialized")
+        print("  [+] Gemini: AI Model Initialized (v1.5 Flash)")
+        status_msg.append("gemini_ok")
     else:
-        print("❌ Gemini: MISSING API KEY (Check .env)")
+        print("  [!] Gemini: AI MODEL UNAVAILABLE")
+        status_msg.append("gemini_fail")
         
-    print("="*50 + "\n")
+    print("  " + "="*48 + "\n")
 
 # Include routers
 app.include_router(auth.router)
@@ -62,18 +71,16 @@ app.include_router(chat.router)
 app.include_router(stats.router)
 
 # Global Error Handlers
-@app.exception_handler(404)
-async def not_found_exception_handler(request: Request, exc):
-    return JSONResponse(
-        status_code=status.HTTP_404_NOT_FOUND,
-        content={"message": "Resource not found", "path": request.url.path}
-    )
-
-@app.exception_handler(500)
-async def internal_server_error_handler(request: Request, exc):
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    print(f"🔥 UNHANDLED ERROR: {str(exc)}")
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"message": "Internal server error", "detail": str(exc)}
+        content={
+            "error": "Internal Server Error",
+            "message": "A critical error occurred in the processing pipeline.",
+            "type": type(exc).__name__
+        }
     )
 
 @app.get("/health")
@@ -82,14 +89,14 @@ async def health_check():
     from services.gemini_service import model
     
     return {
-        "status": "online",
+        "status": "operational",
         "timestamp": time.time(),
-        "version": "1.0.0",
-        "service": "StudyMind AI API",
-        "integrations": {
-            "supabase": "connected" if supabase else "missing_config",
-            "gemini": "connected" if model else "missing_config"
-        }
+        "environment": os.getenv("ENVIRONMENT", "development"),
+        "services": {
+            "database": "connected" if supabase else "error",
+            "intelligence_engine": "ready" if model else "unavailable"
+        },
+        "version": "1.0.0-pro"
     }
 
 if __name__ == "__main__":

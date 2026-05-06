@@ -18,56 +18,47 @@ async def get_dashboard_stats(user_id: str, current_user: str = Depends(get_curr
 
     try:
         # 1. Fetch Profile (streak, total_questions)
-        profile_task = supabase.table("profiles").select("*").eq("id", user_id).single().execute()
+        profile_res = supabase.table("profiles").select("*").eq("id", user_id).execute()
+        profile = profile_res.data[0] if profile_res.data else {}
         
         # 2. Count total papers
-        papers_count_task = supabase.table("papers").select("id", count="exact").eq("user_id", user_id).execute()
+        papers_count_res = supabase.table("papers").select("id", count="exact").eq("user_id", user_id).execute()
+        papers_count = papers_count_res.count if papers_count_res.count is not None else 0
         
         # 3. Count total sessions
-        sessions_count_task = supabase.table("chat_sessions").select("id", count="exact").eq("user_id", user_id).execute()
+        sessions_count_res = supabase.table("chat_sessions").select("id", count="exact").eq("user_id", user_id).execute()
+        sessions_count = sessions_count_res.count if sessions_count_res.count is not None else 0
         
         # 4. Recent papers (last 5)
-        recent_papers_task = supabase.table("papers") \
+        recent_papers_res = supabase.table("papers") \
             .select("id, title, subject, created_at, page_count") \
             .eq("user_id", user_id) \
             .order("created_at", descending=True) \
             .limit(5) \
             .execute()
+        recent_papers = recent_papers_res.data or []
             
         # 5. Recent sessions (last 3)
-        recent_sessions_task = supabase.table("chat_sessions") \
+        recent_sessions_res = supabase.table("chat_sessions") \
             .select("id, title, paper_id, updated_at, message_count, papers(title)") \
             .eq("user_id", user_id) \
             .order("updated_at", descending=True) \
             .limit(3) \
             .execute()
+        recent_sessions = recent_sessions_res.data or []
 
-        # 6. Activity (last 14 days) - Filter by user via session join
+        # 6. Activity (last 14 days)
         fourteen_days_ago = (datetime.now() - timedelta(days=14)).isoformat()
-        # Since messages table doesn't have user_id, we join with chat_sessions
-        activity_task = supabase.table("messages") \
+        activity_res = supabase.table("messages") \
             .select("created_at, chat_sessions!inner(user_id)") \
             .eq("chat_sessions.user_id", user_id) \
             .eq("role", "user") \
             .gte("created_at", fourteen_days_ago) \
             .execute()
-
-        # Execute all tasks
-        # (Since supabase client is sync, we'll just run them sequentially or use a thread pool if needed, 
-        # but for this scale sequential is fine. If it were async client we'd use gather)
-        profile = profile_task.data
-        papers_count = papers_count_task.count
-        sessions_count = sessions_count_task.count
-        recent_papers = recent_papers_task.data
-        recent_sessions = recent_sessions_task.data
-        messages = activity_task.data
+        messages = activity_res.data or []
 
         # Process Activity
-        activity_map = {}
-        for i in range(14):
-            date = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
-            activity_map[date] = 0
-        
+        activity_map = { (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d'): 0 for i in range(14) }
         for msg in messages:
             date = msg['created_at'][:10]
             if date in activity_map:
@@ -78,16 +69,16 @@ async def get_dashboard_stats(user_id: str, current_user: str = Depends(get_curr
         # Process Top Subjects
         subject_res = supabase.table("papers").select("subject").eq("user_id", user_id).execute()
         subjects = {}
-        for p in subject_res.data:
-            s = p['subject']
+        for p in (subject_res.data or []):
+            s = p.get('subject', 'Unknown')
             subjects[s] = subjects.get(s, 0) + 1
         
         top_subjects = [{"subject": k, "count": v} for k, v in sorted(subjects.items(), key=lambda x: x[1], reverse=True)[:3]]
 
         return {
-            "total_papers": papers_count or 0,
+            "total_papers": papers_count,
             "total_questions": profile.get("total_questions", 0),
-            "total_sessions": sessions_count or 0,
+            "total_sessions": sessions_count,
             "study_streak": profile.get("study_streak", 0),
             "recent_papers": recent_papers,
             "recent_sessions": recent_sessions,
@@ -96,7 +87,8 @@ async def get_dashboard_stats(user_id: str, current_user: str = Depends(get_curr
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Error in dashboard stats: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve dashboard statistics")
 
 @router.get("/user/{user_id}", response_model=UserStatsResponse)
 async def get_user_detailed_stats(user_id: str, current_user: str = Depends(get_current_user)):

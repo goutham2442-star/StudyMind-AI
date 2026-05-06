@@ -65,7 +65,7 @@ export function Sidebar() {
   return (
     <motion.aside
       animate={{ width: isCollapsed ? 64 : 260 }}
-      className="hidden lg:flex flex-col h-screen fixed left-0 top-0 bg-[#050508]/80 backdrop-blur-2xl border-r border-white/5 z-40 transition-all duration-500 shadow-[20px_0_40px_rgba(0,0,0,0.3)]"
+      className="hidden lg:flex flex-col h-screen fixed left-0 top-0 bg-background/80 backdrop-blur-2xl border-r border-white/5 z-40 transition-all duration-500 shadow-[20px_0_40px_rgba(0,0,0,0.3)]"
     >
       {/* Logo Section */}
       <div className={cn("p-8 mb-4 flex items-center gap-4", isCollapsed && "justify-center px-0")}>
@@ -107,24 +107,26 @@ export function Sidebar() {
       {/* User Section */}
       <div className="p-6 mt-auto bg-white/2 border-t border-white/5">
         <div className={cn("flex items-center gap-4", isCollapsed && "justify-center")}>
-          <div className="relative group">
-            <div className="absolute -inset-1 bg-linear-to-r from-primary to-secondary rounded-full blur opacity-0 group-hover:opacity-40 transition-opacity" />
-            <Avatar 
-              name={user?.user_metadata?.full_name || 'User'} 
-              size={isCollapsed ? 'sm' : 'md'} 
-              className="relative border border-white/10"
-            />
-          </div>
-          {!isCollapsed && (
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-black truncate tracking-tight">
-                {user?.user_metadata?.full_name || 'Student'}
-              </p>
-              <p className="text-[9px] text-muted truncate uppercase tracking-widest font-black opacity-50">
-                {user?.user_metadata?.university || 'University AI'}
-              </p>
+          <Link href="/settings" className="flex items-center gap-4 flex-1 min-w-0 group/user">
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-linear-to-r from-primary to-secondary rounded-full blur opacity-0 group-hover:opacity-40 transition-opacity" />
+              <Avatar 
+                name={user?.user_metadata?.full_name || 'User'} 
+                size={isCollapsed ? 'sm' : 'md'} 
+                className="relative border border-white/10"
+              />
             </div>
-          )}
+            {!isCollapsed && (
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-black truncate tracking-tight group-hover/user:text-primary transition-colors">
+                  {user?.user_metadata?.full_name || 'Student'}
+                </p>
+                <p className="text-[9px] text-muted truncate uppercase tracking-widest font-black opacity-50">
+                  {user?.user_metadata?.university || 'University AI'}
+                </p>
+              </div>
+            )}
+          </Link>
           {!isCollapsed && (
             <button 
               onClick={handleLogout}
@@ -136,10 +138,9 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* Collapse Toggle */}
       <button
         onClick={toggleCollapse}
-        className="absolute -right-3 top-24 w-6 h-6 bg-[#050508] border border-white/10 rounded-full flex items-center justify-center text-muted hover:text-primary transition-all shadow-[10px_0_20px_rgba(0,0,0,0.5)] z-50 group"
+        className="absolute -right-3 top-24 w-6 h-6 bg-background border border-white/10 rounded-full flex items-center justify-center text-muted hover:text-primary transition-all shadow-[10px_0_20px_rgba(0,0,0,0.5)] z-50 group"
       >
         {isCollapsed ? <ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform" /> : <ChevronLeft size={12} className="group-hover:-translate-x-0.5 transition-transform" />}
       </button>
